@@ -80,10 +80,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lrberge.github.io/fixest/" class="external-link">fixest</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="models-included-in-this-package">1. Models Included in This Package<a class="anchor" aria-label="anchor" href="#models-included-in-this-package"></a>
-</h2>
+<div class="section level3">
+<h3 id="models-included-in-this-package">1. Models included in this package<a class="anchor" aria-label="anchor" href="#models-included-in-this-package"></a>
+</h3>
 <p>This package can simulate and estimate panel regression models of the
 following form:</p>
 <p><span class="math display">\[
@@ -138,9 +137,9 @@ is exogenous.</li>
 <p>All of the estimators assume that the number of time periods is small
 and the sample size is large (“small-T big-N” asymptotics).</p>
 </div>
-<div class="section level2">
-<h2 id="preliminary-components">2. Preliminary Components<a class="anchor" aria-label="anchor" href="#preliminary-components"></a>
-</h2>
+<div class="section level3">
+<h3 id="preliminary-components">2. Preliminary components<a class="anchor" aria-label="anchor" href="#preliminary-components"></a>
+</h3>
 <p>This package contains only two functions:</p>
 <ul>
 <li>
@@ -178,9 +177,9 @@ below:</p>
 <span>  covariate_names <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="the-fe-model">3. The “FE” model<a class="anchor" aria-label="anchor" href="#the-fe-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="the-fe-model">3. The “FE” model<a class="anchor" aria-label="anchor" href="#the-fe-model"></a>
+</h3>
 <p>The error term is given by <span class="math inline">\(\epsilon_{it}
 = \alpha_i\)</span>. The data can be simulated as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -220,9 +219,9 @@ estimated without an instrument. The implementation is as follows:</p>
 <span><span class="co">#&gt; 1: endog_var1  0.491472 0.008197  59.95752      0</span></span>
 <span><span class="co">#&gt; 2: endog_var2 -0.205604 0.006836 -30.07640      0</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="the-iid-model">4. The “iid” model<a class="anchor" aria-label="anchor" href="#the-iid-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="the-iid-model">4. The “iid” model<a class="anchor" aria-label="anchor" href="#the-iid-model"></a>
+</h3>
 <p>The error term is given by <span class="math inline">\(\epsilon_{it}
 = \eta_{it}\)</span>. The model can be simulated as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -260,9 +259,9 @@ follows:</p>
 <span><span class="co">#&gt; 1: endog_var1  0.490619 0.007004  70.05026      0</span></span>
 <span><span class="co">#&gt; 2: endog_var2 -0.204615 0.007157 -28.59118      0</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="the-ma1-model">5. The “MA1” model<a class="anchor" aria-label="anchor" href="#the-ma1-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="the-ma1-model">5. The “MA1” model<a class="anchor" aria-label="anchor" href="#the-ma1-model"></a>
+</h3>
 <p>The error term is given by <span class="math inline">\(\epsilon_{it}
 = \eta_{it} + \theta \eta_{it-1}\)</span>. The data can be simulated as
 follows:</p>
@@ -314,9 +313,9 @@ implementation is as follows:</p>
 <span><span class="co">#&gt; 1: endog_var1  0.495611 0.010123  48.95919      0</span></span>
 <span><span class="co">#&gt; 2: endog_var2 -0.200817 0.010273 -19.54823      0</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="the-ar1-model">6. The “AR1” model<a class="anchor" aria-label="anchor" href="#the-ar1-model"></a>
-</h2>
+<div class="section level3">
+<h3 id="the-ar1-model">6. The “AR1” model<a class="anchor" aria-label="anchor" href="#the-ar1-model"></a>
+</h3>
 <p>The error term is given by <span class="math inline">\(\epsilon_{it}
 = \rho\epsilon_{it-1} + \eta_{it}\)</span>. The data can be simulated as
 follows:</p>
@@ -420,16 +419,21 @@ outcomes as IVs:</p>
 <span>  AR1_IV_lags <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", varnames = varnames, </span></span>
-<span><span class="co">#AR1_options = AR1_options)</span></span>
+<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span>, </span>
+<span>AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#head(reg)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           Variable  Estimate</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:      endog_var1  0.500346</span></span>
+<span><span class="co">#&gt; 2:      endog_var2 -0.194480</span></span>
+<span><span class="co">#&gt; 3: AR1_persistence  0.497813</span></span></code></pre></div>
 <p>Note that an estimate of the AR(1) persistence parameter, <span class="math inline">\(\rho\)</span>, is returned by both method
 “AR1”.</p>
 </div>
-<div class="section level2">
-<h2 id="incorporating-exogenous-covariates">7. Incorporating Exogenous Covariates<a class="anchor" aria-label="anchor" href="#incorporating-exogenous-covariates"></a>
-</h2>
+<div class="section level3">
+<h3 id="adding-exogenous-covariates">7. Adding exogenous covariates<a class="anchor" aria-label="anchor" href="#adding-exogenous-covariates"></a>
+</h3>
 <p>Consider again the “AR1” model. We can add covariates to the
 simulated model by setting the <code>true_gamma</code> parameter:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -476,6 +480,7 @@ list:</p>
 <span><span class="co">#&gt; 1:      endog_var1  0.460510 0.022811  20.18812      0</span></span>
 <span><span class="co">#&gt; 2:      endog_var2 -0.184835 0.010847 -17.03945      0</span></span>
 <span><span class="co">#&gt; 3: AR1_persistence  0.502494 0.005254  95.64507      0</span></span></code></pre></div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
