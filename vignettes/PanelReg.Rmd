@@ -38,7 +38,7 @@ library(data.table)
 library(fixest)
 ```
 
-## 1. Models Included in This Package
+### 1. Models included in this package
 
 This package can simulate and estimate panel regression models of the following form:
 
@@ -72,7 +72,7 @@ The "model" refers to the assumed time-series process governing $\epsilon_{it}$:
 All of the estimators assume that the number of time periods is small and the sample size is large ("small-T big-N" asymptotics).
 
 
-## 2. Preliminary Components
+### 2. Preliminary components
 
 This package contains only two functions:
 
@@ -102,7 +102,7 @@ varnames = list(
 
 
 
-## 3. The "FE" model
+### 3. The "FE" model
 
 The error term is given by $\epsilon_{it} = \alpha_i$. The data can be simulated as follows:
 
@@ -139,7 +139,7 @@ head(reg)
 
 
 
-## 4. The "iid" model
+### 4. The "iid" model
 
 The error term is given by $\epsilon_{it} = \eta_{it}$. The model can be simulated as follows:
 
@@ -171,7 +171,7 @@ head(reg)
 
 
 
-## 5. The "MA1" model
+### 5. The "MA1" model
 
 The error term is given by $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$. The data can be simulated as follows:
 
@@ -212,7 +212,7 @@ head(reg)
 
 
 
-## 6. The "AR1" model
+### 6. The "AR1" model
 
 The error term is given by $\epsilon_{it} = \rho\epsilon_{it-1} + \eta_{it}$. The data can be simulated as follows: 
 
@@ -290,17 +290,17 @@ AR1_options = list(
   AR1_IV_lags = 2
 )
 
-#reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", varnames = varnames, 
-#AR1_options = AR1_options)
+reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", varnames = varnames, 
+AR1_options = AR1_options)
 
-#head(reg)
+head(reg)
 ```
 
 Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by both method "AR1".
 
 
 
-## 7. Incorporating Exogenous Covariates
+### 7. Adding exogenous covariates
 
 Consider again the "AR1" model. We can add covariates to the simulated model by setting the `true_gamma` parameter:
 

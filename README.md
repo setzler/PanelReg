@@ -5,14 +5,14 @@ Panel Regressions in R
 
 
 
-## Overview
+### Overview
 
 This package estimates panel regression models, which are models of the
 form,
 $y_{it} = x_{it}' \beta + w_{it}' \gamma + \epsilon_{it} + \nu_{it}$.
 The parameter of interest is $\beta$, $x_{it}$ is the vector of
 endogenous regressors, $w_{it}$ is the vector of exogenous covariates,
-$\epsilon_{it}$ is the endogenous unobservable, and $\eta_{it}$ is the
+$\epsilon_{it}$ is the endogenous unobservable, and $\nu_{it}$ is the
 exogenous unobservable (i.e. measurement error).
 
 The purpose of this package is to provide a convenient estimator of
@@ -40,7 +40,7 @@ There are only 2 functions in this package:
     [here](https://setzler.github.io/PanelReg/reference/PanelRegSim.html)
     or by running `?PanelRegSim` in R.
 
-## Basic Usage
+### Basic Usage
 
 Before estimation, set up a variable list with the names of your
 variables:
@@ -55,7 +55,7 @@ varnames = list(
 )
 ```
 
-To estimate the panel regression, use syntax such as the following:
+To estimate the panel regression, the syntax is as follows:
 
 ``` r
 reg = PanelReg(panel_data, panel_model = "MA1", varnames)
@@ -68,7 +68,7 @@ For complete examples and details on the estimators, see the [Get
 Started](https://setzler.github.io/PanelReg/articles/PanelReg.html)
 page.
 
-## Installation
+### Installation
 
 To install the package from Github:
 

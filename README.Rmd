@@ -20,9 +20,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Overview
+### Overview
 
-This package estimates panel regression models, which are models of the form, $y_{it} = x_{it}' \beta + w_{it}' \gamma + \epsilon_{it} + \nu_{it}$. The parameter of interest is $\beta$, $x_{it}$ is the vector of endogenous regressors, $w_{it}$ is the vector of exogenous covariates, $\epsilon_{it}$ is the endogenous unobservable, and $\eta_{it}$ is the exogenous unobservable (i.e. measurement error).
+This package estimates panel regression models, which are models of the form, $y_{it} = x_{it}' \beta + w_{it}' \gamma + \epsilon_{it} + \nu_{it}$. The parameter of interest is $\beta$, $x_{it}$ is the vector of endogenous regressors, $w_{it}$ is the vector of exogenous covariates, $\epsilon_{it}$ is the endogenous unobservable, and $\nu_{it}$ is the exogenous unobservable (i.e. measurement error).
 
 The purpose of this package is to provide a convenient estimator of $\beta$ given the most common time-series process assumptions on $\epsilon_{it}$, which are:
 
@@ -39,7 +39,7 @@ There are only 2 functions in this package:
 
 
 
-## Basic Usage
+### Basic Usage
 
 Before estimation, set up a variable list with the names of your variables:
 
@@ -53,7 +53,7 @@ varnames = list(
 )
 ``` 
 
-To estimate the panel regression, use syntax such as the following:
+To estimate the panel regression, the syntax is as follows:
 
 ```{r echo=TRUE, eval=FALSE, message=FALSE}
 reg = PanelReg(panel_data, panel_model = "MA1", varnames)
@@ -64,7 +64,7 @@ The argument `panel_model` must be one of `"exogenous"`, `"FE"`, `"iid"`, `"MA1"
 For complete examples and details on the estimators, see the [Get Started](https://setzler.github.io/PanelReg/articles/PanelReg.html) page.
 
 
-## Installation
+### Installation
 
 
 To install the package from Github:
