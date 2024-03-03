@@ -65,9 +65,9 @@ There are three unobservable processes:
 The "model" refers to the assumed time-series process governing $\epsilon_{it}$:
 
 1. Fixed Effects ("FE"): $\epsilon_{it} = \alpha_i$.
-2. Serially Independent ("iid"): $\epsilon_{it} = \eta_{it}$, where $\eta_{it}$ is exogenous.
-3. Moving Average of Order 1 ("MA1"): $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$, where $\eta_{it}$ is exogenous.
-4. First Order Autoregressive  ("AR1"): $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$, where $\eta_{it}$ is exogenous.
+2. Serially Independent ("iid"): $\epsilon_{it} = \eta_{it}$.
+3. Moving Average of Order 1 ("MA1"): $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
+4. First Order Autoregressive  ("AR1"): $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$.
 
 All of the estimators assume that the number of time periods is small and the sample size is large ("small-T big-N" asymptotics).
 
@@ -300,7 +300,7 @@ Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by
 
 
 
-### 7. Adding exogenous covariates
+### 7. Controlling for covariates
 
 Consider again the "AR1" model. We can add covariates to the simulated model by setting the `true_gamma` parameter:
 

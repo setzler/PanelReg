@@ -20,14 +20,11 @@ $\beta$ given the most common time-series process assumptions on
 $\epsilon_{it}$, which are:
 
 1.  Fixed Effects (“FE”): $\epsilon_{it} = \alpha_i$.
-2.  Serially Independent (“iid”): $\epsilon_{it} = \eta_{it}$, where
-    $\eta_{it}$ is exogenous.
+2.  Serially Independent (“iid”): $\epsilon_{it} = \eta_{it}$.
 3.  Moving Average of Order 1 (“MA1”):
-    $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$, where $\eta_{it}$
-    is exogenous.
+    $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
 4.  First Order Autoregressive (“AR1”):
-    $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$, where
-    $\eta_{it}$ is exogenous.
+    $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$.
 
 There are only 2 functions in this package:
 
@@ -64,7 +61,8 @@ reg = PanelReg(panel_data, panel_model = "MA1", varnames)
 The argument `panel_model` must be one of `"exogenous"`, `"FE"`,
 `"iid"`, `"MA1"`, or `"AR1"`.
 
-For complete examples and details on the estimators, see the [Get
+For complete examples and details on the estimators and simulators, see
+the [Get
 Started](https://setzler.github.io/PanelReg/articles/PanelReg.html)
 page.
 
