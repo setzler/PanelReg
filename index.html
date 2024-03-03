@@ -63,9 +63,9 @@
 <p>The purpose of this package is to provide a convenient estimator of <span class="math inline"><em>β</em></span> given the most common time-series process assumptions on <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub></span>, which are:</p>
 <ol style="list-style-type: decimal">
 <li>Fixed Effects (“FE”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>α</em><sub><em>i</em></sub></span>.</li>
-<li>Serially Independent (“iid”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
-<li>Moving Average of Order 1 (“MA1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub> + <em>θ</em><em>η</em><sub><em>i</em><em>t</em> − 1</sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
-<li>First Order Autoregressive (“AR1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>ρ</em><em>ϵ</em><sub><em>i</em><em>t</em> − 1</sub> + <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
+<li>Serially Independent (“iid”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub></span>.</li>
+<li>Moving Average of Order 1 (“MA1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub> + <em>θ</em><em>η</em><sub><em>i</em><em>t</em> − 1</sub></span>.</li>
+<li>First Order Autoregressive (“AR1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>ρ</em><em>ϵ</em><sub><em>i</em><em>t</em> − 1</sub> + <em>η</em><sub><em>i</em><em>t</em></sub></span>.</li>
 </ol>
 <p>There are only 2 functions in this package:</p>
 <ol style="list-style-type: decimal">
@@ -91,7 +91,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="reference/PanelReg.html">PanelReg</a></span><span class="op">(</span><span class="va">panel_data</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, <span class="va">varnames</span><span class="op">)</span></span></code></pre></div>
 <p>The argument <code>panel_model</code> must be one of <code>"exogenous"</code>, <code>"FE"</code>, <code>"iid"</code>, <code>"MA1"</code>, or <code>"AR1"</code>.</p>
-<p>For complete examples and details on the estimators, see the <a href="https://setzler.github.io/PanelReg/articles/PanelReg.html">Get Started</a> page.</p>
+<p>For complete examples and details on the estimators and simulators, see the <a href="https://setzler.github.io/PanelReg/articles/PanelReg.html">Get Started</a> page.</p>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>

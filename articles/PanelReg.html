@@ -127,12 +127,11 @@ serially-independent shock that is independent of <span class="math inline">\(x_
 <ol style="list-style-type: decimal">
 <li>Fixed Effects (“FE”): <span class="math inline">\(\epsilon_{it} =
 \alpha_i\)</span>.</li>
-<li>Serially Independent (“iid”): <span class="math inline">\(\epsilon_{it} = \eta_{it}\)</span>, where <span class="math inline">\(\eta_{it}\)</span> is exogenous.</li>
+<li>Serially Independent (“iid”): <span class="math inline">\(\epsilon_{it} = \eta_{it}\)</span>.</li>
 <li>Moving Average of Order 1 (“MA1”): <span class="math inline">\(\epsilon_{it} = \eta_{it} + \theta
-\eta_{it-1}\)</span>, where <span class="math inline">\(\eta_{it}\)</span> is exogenous.</li>
+\eta_{it-1}\)</span>.</li>
 <li>First Order Autoregressive (“AR1”): <span class="math inline">\(\epsilon_{it} = \rho \epsilon_{it-1} +
-\eta_{it}\)</span>, where <span class="math inline">\(\eta_{it}\)</span>
-is exogenous.</li>
+\eta_{it}\)</span>.</li>
 </ol>
 <p>All of the estimators assume that the number of time periods is small
 and the sample size is large (“small-T big-N” asymptotics).</p>
@@ -432,7 +431,7 @@ outcomes as IVs:</p>
 “AR1”.</p>
 </div>
 <div class="section level3">
-<h3 id="adding-exogenous-covariates">7. Adding exogenous covariates<a class="anchor" aria-label="anchor" href="#adding-exogenous-covariates"></a>
+<h3 id="controlling-for-covariates">7. Controlling for covariates<a class="anchor" aria-label="anchor" href="#controlling-for-covariates"></a>
 </h3>
 <p>Consider again the “AR1” model. We can add covariates to the
 simulated model by setting the <code>true_gamma</code> parameter:</p>
