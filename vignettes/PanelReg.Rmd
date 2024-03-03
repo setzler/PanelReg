@@ -96,7 +96,8 @@ varnames = list(
   time_name = "time_id",
   outcome_name = "outcome",
   endogenous_names = c("endog_var1", "endog_var2"),
-  covariate_names = NULL
+  covariate_names = NULL,
+  fixedeffect_names = NULL
 )
 ```
 
