@@ -1,5 +1,5 @@
 ---
-title: "PanelReg"
+title: "Get Started"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{PanelReg}
@@ -64,10 +64,10 @@ There are three unobservable processes:
 
 The "model" refers to the assumed time-series process governing $\epsilon_{it}$:
 
-1. **Fixed Effects Model ("FE"):** $\epsilon_{it} = \alpha_i$.
-2. **Serially Independent Model ("iid"):** $\epsilon_{it} = \eta_{it}$.
-3. **Moving Average Model of Order 1 ("MA1"):** $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
-4. **First Order Autoregressive Model ("AR1"):** $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$.
+1. Fixed Effects ("FE"): $\epsilon_{it} = \alpha_i$.
+2. Serially Independent ("iid"): $\epsilon_{it} = \eta_{it}$, where $\eta_{it}$ is exogenous.
+3. Moving Average of Order 1 ("MA1"): $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$, where $\eta_{it}$ is exogenous.
+4. First Order Autoregressive  ("AR1"): $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$, where $\eta_{it}$ is exogenous.
 
 All of the estimators assume that the number of time periods is small and the sample size is large ("small-T big-N" asymptotics).
 
