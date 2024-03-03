@@ -5,14 +5,14 @@
 #' @import data.table
 #' @import fixest
 #'
-#' @param panel_data (data.table) A data.table containing the panel data.
-#' @param panel_model (character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1".
-#' @param varnames (list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the exogenous variables. If covariate_names is NULL, then the model is estimated without exogenous variables.
+#' @param panel_data (data.table) A data.table containing the panel data. It should be in "long" format, which means that each row is uniquely identified by a (id, time) combination.
+#' @param panel_model (character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1". See the package vignette for details.
+#' @param varnames (list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names and fixedeffect_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the covariates to control linearly, and the fixedeffect_names is a character vector of the names of the covariates to control using discrete indicators. If covariate_names is NULL, then the model is estimated without linear covariates. If fixedeffect_names is NULL, then the model is estimated without fixed effects. 
 #' @param AR1_options (list) If panel_model != "AR1", then this list is ignored. If panel_model = "AR1", then this list must be non-empty. It contains the options for estimating the AR(1) model. It must contain the following elements: AR1_method, AR1_IV_lags, AR1_IV_outcome, and AR1_persistence. The AR1_method is the method to use to estimate the AR(1) model, and it must be one of "PanelIV" and "GMM". The AR1_IV_lags is the number of lags to use in the IV regression, which must be 1 or 2, and it is only used if AR1_method = "GMM". The AR1_IV_outcome specifies whether or not to include the lagged outcome variable as an instrument. The particular lags of the outcome used are inferred from AR1_IV_lags. The AR1_persistence is the value to force the AR(1) persistence parameter to equal; if it is NULL, then the AR(1) persistence parameter is estimated. The default is AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE).
 #'
 #' @return (data.table) The estimates from the panel regression model.
 #' @export
-PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)) {
+PanelReg <- function(panel_data, panel_model, varnames, AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)) {
 
     ##########################################
     # 1. Input Validation
@@ -24,6 +24,7 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
     outcome_name = varnames$outcome_name
     endogenous_names = varnames$endogenous_names
     covariate_names = varnames$covariate_names
+    fixedeffect_names = varnames$fixedeffect_names
 
     # unpack the AR1 options
     AR1_method = AR1_options$AR1_method
@@ -57,6 +58,20 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
     panel_data = merge(panel_data, panel_data_lag, by = c(id_name, time_name))
     panel_data = merge(panel_data, panel_data_lag2, by = c(id_name, time_name))
 
+    # if the panel model is FE, we need differenced variables
+    if (panel_model == "FE") {
+        # define differenced outcome and endogenous variables
+        panel_data[, (paste0(outcome_name, "_diff")) := get(outcome_name) - get(paste0(outcome_name, "_lag"))]
+        for (ii in seq_len(length(endogenous_names))) {
+            panel_data[, paste0(endogenous_names[ii], "_diff") := get(endogenous_names[ii]) - get(paste0(endogenous_names[ii], "_lag"))]
+        }
+        if (length(covariate_names) > 0) {
+            for (ii in seq_len(length(covariate_names))) {
+                panel_data[, paste0(covariate_names[ii], "_diff") := get(covariate_names[ii]) - get(paste0(covariate_names[ii], "_lag"))]
+            }
+        }
+    }
+
 
     ##########################################
     # 3. Estimate the Model
@@ -64,11 +79,8 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
 
     # estimate the exogenous model
     if (panel_model == "exogenous") {
-        # estimate the model
-        the_formula = sprintf("%s ~ %s", outcome_name, paste(endogenous_names, collapse = " + "))
-        if (length(covariate_names) > 0) {
-            the_formula = sprintf("%s ~ %s + %s", outcome_name, paste(endogenous_names, collapse = " + "), paste(covariate_names, collapse = " + "))
-        }
+        # build the formula
+        the_formula = PR.formula.exogenous(outcome_name, endogenous_names, covariate_names, fixedeffect_names)
         # estimate the model
         est = feols(as.formula(the_formula), data = panel_data)
         # return the estimated second stage
@@ -77,15 +89,8 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
 
     # estimate the iid model
     if (panel_model == "iid") {
-        # estimate the model
-        the_formula = sprintf("%s ~ 1 | %s ~ %s", outcome_name, paste(endogenous_names, collapse = " + "), paste(paste0(endogenous_names, "_lag"), collapse = " + "))
-        if (length(covariate_names) > 0) {
-            the_formula = sprintf("%s ~ %s | %s ~ %s",
-                                  outcome_name,
-                                  paste(covariate_names, collapse = " + "),
-                                  paste(endogenous_names, collapse = " + "),
-                                  paste(paste0(endogenous_names, "_lag"), collapse = " + "))
-        }
+        # build the formula
+        the_formula = PR.formula.iid(outcome_name, endogenous_names, covariate_names, fixedeffect_names)
         # estimate the model
         est = feols(as.formula(the_formula), data = panel_data)
         # return the estimated second stage
@@ -95,26 +100,8 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
 
     # estimate the fixed effects FE model
     if (panel_model == "FE") {
-        # define differenced outcome and endogenous variables
-        panel_data[, (paste0(outcome_name, "_diff")) := get(outcome_name) - get(paste0(outcome_name, "_lag"))]
-        for (ii in seq_len(length(endogenous_names))) {
-            panel_data[, paste0(endogenous_names[ii], "_diff") := get(endogenous_names[ii]) - get(paste0(endogenous_names[ii], "_lag"))]
-        }
-        if(length(covariate_names) > 0) {
-            for (ii in seq_len(length(covariate_names))) {
-                panel_data[, paste0(covariate_names[ii], "_diff") := get(covariate_names[ii]) - get(paste0(covariate_names[ii], "_lag"))]
-            }
-        }
-        # estimate the model
-        the_formula = sprintf("%s ~ %s",
-                              paste0(outcome_name, "_diff"),
-                              paste0(paste0(endogenous_names, "_diff"), collapse = " + "))
-        if (length(covariate_names) > 0) {
-            the_formula = sprintf("%s ~ %s + %s",
-                                  paste0(outcome_name, "_diff"),
-                                  paste0(paste0(endogenous_names, "_diff"), collapse = " + "),
-                                  paste0(paste0(covariate_names, "_diff"), collapse = " + "))
-        }
+        # build the formula
+        the_formula = PR.formula.FE(outcome_name, endogenous_names, covariate_names, fixedeffect_names)
         # estimate the model
         est = feols(as.formula(the_formula), data = panel_data)
         # return the estimated second stage
@@ -124,16 +111,8 @@ PanelReg <- function(panel_data, panel_model = "iid", varnames, AR1_options = li
 
     # estimate the MA1 model
     if (panel_model == "MA1") {
-        # estimate the model
-        the_formula = sprintf("%s ~ 1 | %s ~ %s", outcome_name,
-                              paste(endogenous_names, collapse = " + "),
-                              paste(paste0(endogenous_names, "_lag2"), collapse = " + "))
-        if (length(covariate_names) > 0) {
-          the_formula = sprintf("%s ~ %s | %s ~ %s", outcome_name,
-                                paste(covariate_names, collapse = " + "),
-                                paste(endogenous_names, collapse = " + "),
-                                paste(paste0(endogenous_names, "_lag2"), collapse = " + "))
-        }
+        # build the formula
+        the_formula = PR.formula.MA1(outcome_name, endogenous_names, covariate_names, fixedeffect_names)
         # estimate the model
         est = feols(as.formula(the_formula), data = panel_data)
         # return the estimated second stage

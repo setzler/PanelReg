@@ -14,11 +14,12 @@
 #' @param endog_weight (numeric) The weight of the endogenous variable in the panel model. Must be between 0 and 1.
 #' @param MA1_persistence (numeric) The persistence parameter of the MA(1) process, i.e., eps_{it} = shock_{it} + MA1_persistence * shock_{it-1}.
 #' @param AR1_persistence (numeric) The persistence parameter of the AR(1) process, i.e., eps_{it} = AR1_persistence * eps_{it-1} + shock_{it}.
-#' @param true_gamma (numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).
+#' @param true_gamma (numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).If length(gamma) > 1, then the function adds exogenous variables to the outcome that are correlated with the first endogenous variable.
+#' @param true_FE_var (numeric) The variance of the fixed effects. By default, true_FE_var = 0 so that there are no fixed effects. If true_FE_var > 0, then the function adds fixed effects to the outcome that are correlated with the first endogenous variable.
 #' @param return_unobservables (logical) If TRUE, the function returns the full panel dataset, including the unobservable variables. If FALSE, the function returns only the observable variables.
 #' @return (data.table) A panel dataset.
 #' @export
-PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_year = 2010, noise_sd = 1, panel_model = "iid", true_beta = 0.5, endog_weight = 0.5, MA1_persistence = 0.5, AR1_persistence = 0.5, true_gamma = c(1), return_unobservables = FALSE) {
+PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_year = 2010, noise_sd = 1, panel_model = "iid", true_beta = 0.5, endog_weight = 0.5, MA1_persistence = 0.5, AR1_persistence = 0.5, true_gamma = c(1), true_FE_var = 0, return_unobservables = FALSE) {
 
 
     ###############################################
@@ -40,11 +41,19 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
 
     # draw the noise variable (eta_it)
     paneldata[, measurement_error := rnorm(.N, sd = noise_sd)]
-    paneldata[, measurement_error := measurement_error - mean(measurement_error), by = "time_id"]
+    #paneldata[, measurement_error := measurement_error - mean(measurement_error), by = "time_id"]
 
-    # define the shock
+    # define the shock used to construct the endogenous unobservable
     paneldata[, shock := rnorm(.N, sd = 1)]
-    paneldata[, shock := shock - mean(shock), by = "time_id"]
+    #paneldata[, shock := shock - mean(shock), by = "time_id"]
+
+    # define the group fixed-effects if true_FE_var > 0
+    if (true_FE_var > 0) {
+        paneldata[, group_draw := runif(1), unit_id]
+        paneldata[, group_id := ceiling(group_draw * 10)] # randomly assign 10 groups
+        paneldata[, group_draw := NULL]
+        paneldata[, group_FE := rnorm(1, sd = sqrt(true_FE_var)), by = c("group_id")]
+    }
 
     # make sure the data is sorted
     paneldata = paneldata[order(unit_id, time_id)]
@@ -52,7 +61,6 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
     ###############################################
     # 3. Draw the Endogenous Error Process
     ###############################################
-
 
     # define panel_models of epsilon process (eps_it)
     if (panel_model %in% c("exogenous", "iid")) {
@@ -95,7 +103,7 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
         paneldata[, paste0("random_walk", ii) := cumsum(rnorm(.N, sd = 1)), by = "unit_id"]
     }
 
-    # set up endogenity weights
+    # set up endogenity weights for the endogenous unobservable process
     endog_weights = endog_weight * (num_endog_vars:1 / num_endog_vars)
     if (panel_model == "exogenous") {
         endog_weights = endog_weights * 0.0
@@ -106,11 +114,12 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
         paneldata[, paste0("endog_var", ii) := 3 + endog_weights[ii] * eps_it + (1 - endog_weights[ii]) * rnorm(n = .N, sd = 1) + get(paste0("random_walk", ii))]
     }
 
-    # define the dependent variable
+    # define the basics of the dependent variable
     paneldata[, outcome := eps_it + measurement_error]
     for (ii in 1:num_endog_vars) {
         paneldata[, outcome := outcome + true_beta[ii] * get(paste0("endog_var", ii))]
     }
+    # add the linear covariates
     num_covariates = length(true_gamma)
     if (num_covariates > 0) {
         for (ii in 1:num_covariates) {
@@ -118,10 +127,15 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
                 paneldata[, outcome := outcome + true_gamma[ii]] # add an intercept
             }
             if (ii > 1) {
-                paneldata[, (paste0("co_var", ii - 1)) := 3 + rnorm(n = .N, sd = 1) + 0.3 * get(paste0("endog_var", 1))]
+                paneldata[, (paste0("co_var", ii - 1)) := ii + rnorm(n = .N, sd = 1) + 0.3 * get(paste0("endog_var", 1))]
                 paneldata[, outcome := outcome + true_gamma[ii] * get(paste0("co_var", ii - 1))]
             }
         }
+    }
+    # add the group fixed-effects
+    if (true_FE_var > 0) {
+        paneldata[, endog_var1 := endog_var1 + group_FE]
+        paneldata[, outcome := outcome + group_FE]
     }
 
     ###############################################
@@ -134,6 +148,9 @@ PanelRegSim <- function(seed = 1234, sample_size = 100, min_year = 2000, max_yea
     keep_vars = c("unit_id", "time_id", "outcome", paste0("endog_var", 1:num_endog_vars))
     if (num_covariates > 1) {
         keep_vars = c(keep_vars, paste0("co_var", 1:(num_covariates - 1)))
+    }
+    if (true_FE_var > 0) {
+        keep_vars = c(keep_vars, "group_id")
     }
     return(paneldata[, .SD, .SDcols = keep_vars])
 }

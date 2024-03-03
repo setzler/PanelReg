@@ -6,17 +6,17 @@
 \usage{
 PanelReg(
   panel_data,
-  panel_model = "iid",
+  panel_model,
   varnames,
   AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
 )
 }
 \arguments{
-\item{panel_data}{(data.table) A data.table containing the panel data.}
+\item{panel_data}{(data.table) A data.table containing the panel data. It should be in "long" format, which means that each row is uniquely identified by a (id, time) combination.}
 
-\item{panel_model}{(character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1".}
+\item{panel_model}{(character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1". See the package vignette for details.}
 
-\item{varnames}{(list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the exogenous variables. If covariate_names is NULL, then the model is estimated without exogenous variables.}
+\item{varnames}{(list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names and fixedeffect_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the covariates to control linearly, and the fixedeffect_names is a character vector of the names of the covariates to control using discrete indicators. If covariate_names is NULL, then the model is estimated without linear covariates. If fixedeffect_names is NULL, then the model is estimated without fixed effects.}
 
 \item{AR1_options}{(list) If panel_model != "AR1", then this list is ignored. If panel_model = "AR1", then this list must be non-empty. It contains the options for estimating the AR(1) model. It must contain the following elements: AR1_method, AR1_IV_lags, AR1_IV_outcome, and AR1_persistence. The AR1_method is the method to use to estimate the AR(1) model, and it must be one of "PanelIV" and "GMM". The AR1_IV_lags is the number of lags to use in the IV regression, which must be 1 or 2, and it is only used if AR1_method = "GMM". The AR1_IV_outcome specifies whether or not to include the lagged outcome variable as an instrument. The particular lags of the outcome used are inferred from AR1_IV_lags. The AR1_persistence is the value to force the AR(1) persistence parameter to equal; if it is NULL, then the AR(1) persistence parameter is estimated. The default is AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE).}
 }

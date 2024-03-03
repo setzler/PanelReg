@@ -64,7 +64,7 @@ There are three unobservable processes:
 
 The "model" refers to the assumed time-series process governing $\epsilon_{it}$:
 
-1. Fixed Effects ("FE"): $\epsilon_{it} = \alpha_i$.
+1. Fixed Effects ("FE"): $\epsilon_{it} = \bar\epsilon_i, \forall t$.
 2. Serially Independent ("iid"): $\epsilon_{it} = \eta_{it}$.
 3. Moving Average of Order 1 ("MA1"): $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
 4. First Order Autoregressive  ("AR1"): $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$.
@@ -110,7 +110,6 @@ The error term is given by $\epsilon_{it} = \alpha_i$. The data can be simulated
 ```{r echo=T, eval=T, message=FALSE}
 simulated_data = PanelRegSim(panel_model = "FE", seed = 123, sample_size = 10000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
-
 head(simulated_data)
 ```
 
@@ -146,7 +145,6 @@ The error term is given by $\epsilon_{it} = \eta_{it}$. The model can be simulat
 ```{r echo=T, eval=T, message=FALSE}
 simulated_data = PanelRegSim(panel_model = "iid", seed = 123, sample_size = 10000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
-
 head(simulated_data)
 ```
 
@@ -164,7 +162,6 @@ The contemporaneous $x_{it}$ depends on $\eta_{it}$, but its lag $x_{it-1}$ is i
 
 ```{r echo=T, eval=T, message=FALSE}
 reg = PanelReg(panel_data = simulated_data, panel_model = "iid", varnames = varnames)
-
 head(reg)
 ```
 
@@ -178,7 +175,6 @@ The error term is given by $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$. The
 ```{r echo=T, eval=T, message=FALSE}
 simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 10000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
-
 head(simulated_data)
 ```
 
@@ -206,7 +202,6 @@ Similarly to the "iid" case, we can use that lagged values of $x$ are valid inst
 
 ```{r echo=T, eval=T, message=FALSE}
 reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
-
 head(reg)
 ```
 
@@ -217,9 +212,8 @@ head(reg)
 The error term is given by $\epsilon_{it} = \rho\epsilon_{it-1} + \eta_{it}$. The data can be simulated as follows: 
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "AR1", seed = 123, sample_size = 100000, noise_sd=0, 
+simulated_data = PanelRegSim(panel_model = "AR1", seed = 123, sample_size = 100000, noise_sd = 0, 
                              min_year = 2003, max_year = 2008, true_beta = c(0.5, -0.2))
-
 head(simulated_data)
 ```
 
@@ -275,9 +269,8 @@ AR1_options = list(
   AR1_IV_outcome = TRUE
 )
 
-reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", varnames = varnames, 
-AR1_options = AR1_options)
-
+reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", 
+               varnames = varnames, AR1_options = AR1_options)
 head(reg)
 ```
 
@@ -290,24 +283,24 @@ AR1_options = list(
   AR1_IV_lags = 2
 )
 
-reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", varnames = varnames, 
-AR1_options = AR1_options)
-
-head(reg)
+# not run:
+#reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", 
+#               varnames = varnames, AR1_options = AR1_options)
+#head(reg)
 ```
 
-Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by both method "AR1".
+Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by both "AR1" implementations.
 
 
 
 ### 7. Controlling for covariates
 
-Consider again the "AR1" model. We can add covariates to the simulated model by setting the `true_gamma` parameter:
+Consider again the "MA1" model. We can add covariates to the simulated model by setting the `true_gamma` parameter:
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "AR1", seed = 123, sample_size = 20000, 
+simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 20000, 
                              noise_sd = 0, min_year = 2003, max_year = 2009, 
-                             true_beta = c(0.5, -0.2), true_gamma = c(1, -0.5))
+                             true_beta = c(0.5, -0.2), true_gamma = c(1, -1))
 
 head(simulated_data)
 ```
@@ -316,26 +309,47 @@ head(simulated_data)
 If we do not control for the covariates, the estimation becomes biased:
 
 ```{r echo=T, eval=T, message=FALSE}
-AR1_options = list(
-  AR1_method = "PanelIV",
-  AR1_IV_outcome = TRUE
-)
-
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-
+reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
 head(reg)
-
 ```
 
-To control for covariates, we add their names to the varnames list:
+To control for covariates, we add their names to the varnames list in the `$covariate_names` argument:
 
 
 ```{r echo=T, eval=T, message=FALSE}
 varnames$covariate_names = c("co_var1")
 
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-
+reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
 head(reg)
 
+varnames$covariate_names = NULL
+```
+
+
+### 8. Controlling for group fixed-effects 
+
+Consider again the "iid" model. We can assign units to groups in the simulated model by setting the `true_FE_var` parameter:
+
+```{r echo=T, eval=T, message=FALSE}
+simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 20000, 
+                             noise_sd = 0, min_year = 2003, max_year = 2006, 
+                             true_beta = c(0.5, -0.2), true_FE_var = 1)
+head(simulated_data)
+```
+
+If we do not control for the group identifiers, the estimation becomes biased by group fixed-effects:
+
+```{r echo=T, eval=T, message=FALSE}
+reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+head(reg)
+```
+
+To control for group fixed-effects, we add their names to the varnames list in the `$fixedeffect_names` argument:
+
+```{r echo=T, eval=T, message=FALSE}
+varnames$fixedeffect_names = "group_id"
+
+reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+head(reg)
 ```
 

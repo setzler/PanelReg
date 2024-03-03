@@ -6,7 +6,7 @@
 \usage{
 PanelRegSim(
   seed = 1234,
-  sample_size = 100,
+  sample_size = 10000,
   min_year = 2000,
   max_year = 2010,
   noise_sd = 1,
@@ -16,6 +16,7 @@ PanelRegSim(
   MA1_persistence = 0.5,
   AR1_persistence = 0.5,
   true_gamma = c(1),
+  true_FE_var = 0,
   return_unobservables = FALSE
 )
 }
@@ -40,7 +41,9 @@ PanelRegSim(
 
 \item{AR1_persistence}{(numeric) The persistence parameter of the AR(1) process, i.e., eps_{it} = AR1_persistence * eps_{it-1} + shock_{it}.}
 
-\item{true_gamma}{(numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).}
+\item{true_gamma}{(numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).If length(gamma) > 1, then the function adds exogenous variables to the outcome that are correlated with the first endogenous variable.}
+
+\item{true_FE_var}{(numeric) The variance of the fixed effects. By default, true_FE_var = 0 so that there are no fixed effects. If true_FE_var > 0, then the function adds fixed effects to the outcome that are correlated with the first endogenous variable.}
 
 \item{return_unobservables}{(logical) If TRUE, the function returns the full panel dataset, including the unobservable variables. If FALSE, the function returns only the observable variables.}
 }

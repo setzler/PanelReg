@@ -19,7 +19,7 @@ The purpose of this package is to provide a convenient estimator of
 $\beta$ given the most common time-series process assumptions on
 $\epsilon_{it}$, which are:
 
-1.  Fixed Effects (“FE”): $\epsilon_{it} = \alpha_i$.
+1.  Fixed Effects (“FE”): $\epsilon_{it} = \bar\epsilon_i, \forall t$.
 2.  Serially Independent (“iid”): $\epsilon_{it} = \eta_{it}$.
 3.  Moving Average of Order 1 (“MA1”):
     $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
@@ -28,7 +28,7 @@ $\epsilon_{it}$, which are:
 
 There are only 2 functions in this package:
 
-1.  `PanelReg()`: This function estimates the panel regression.
+1.  `PanelReg()`: This function estimates the panel regression model.
     Documentation is available
     [here](https://setzler.github.io/PanelReg/reference/PanelReg.html)
     or by running `?PanelReg` in R.
@@ -44,11 +44,12 @@ variables:
 
 ``` r
 varnames = list(
-  id_name = "id",
-  time_name = "year",
+  id_name = "ID",
+  time_name = "Year",
   outcome_name = "Y",
   endogenous_names = c("X1", "X2"),
-  covariate_names = c("W1")
+  covariate_names = c("W1"),
+  fixedeffect_names = c("Group")
 )
 ```
 

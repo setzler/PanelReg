@@ -26,7 +26,7 @@ This package simulates and estimates a class of panel regression models of the f
 
 The purpose of this package is to provide a convenient estimator of $\beta$ given the most common time-series process assumptions on $\epsilon_{it}$, which are:
 
-1. Fixed Effects ("FE"): $\epsilon_{it} = \alpha_i$.
+1. Fixed Effects ("FE"): $\epsilon_{it} = \bar\epsilon_i, \forall t$.
 2. Serially Independent ("iid"): $\epsilon_{it} = \eta_{it}$.
 3. Moving Average of Order 1 ("MA1"): $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$.
 4. First Order Autoregressive  ("AR1"): $\epsilon_{it} = \rho \epsilon_{it-1} + \eta_{it}$.
@@ -34,7 +34,7 @@ The purpose of this package is to provide a convenient estimator of $\beta$ give
 
 There are only 2 functions in this package:
 
-1. `PanelReg()`: This function estimates the panel regression. Documentation is available [here](https://setzler.github.io/PanelReg/reference/PanelReg.html) or by running `?PanelReg` in R.
+1. `PanelReg()`: This function estimates the panel regression model. Documentation is available [here](https://setzler.github.io/PanelReg/reference/PanelReg.html) or by running `?PanelReg` in R.
 2. `PanelRegSim()`: This function simulates data from a panel regression model. Documentation is available [here](https://setzler.github.io/PanelReg/reference/PanelRegSim.html) or by running `?PanelRegSim` in R.
 
 
@@ -45,11 +45,12 @@ Before estimation, set up a variable list with the names of your variables:
 
 ```{r echo=TRUE, eval=FALSE, message=FALSE}
 varnames = list(
-  id_name = "id",
-  time_name = "year",
+  id_name = "ID",
+  time_name = "Year",
   outcome_name = "Y",
   endogenous_names = c("X1", "X2"),
-  covariate_names = c("W1")
+  covariate_names = c("W1"),
+  fixedeffect_names = c("Group")
 )
 ``` 
 
@@ -81,7 +82,7 @@ library(PanelReg)
 
 Make sure these packages have been installed as well:
 
-```{r echo = TRUE, eval = TRUE, message=FALSE}
+```{r echo = TRUE, eval = FALSE, message=FALSE}
 library(data.table)
 library(fixest)
 ```
