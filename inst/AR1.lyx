@@ -1,0 +1,363 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage[margin=1in]{geometry}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section*
+Model Estimation with AR(1) Endogenous Unobservable
+\end_layout
+
+\begin_layout Subsection*
+1) Model:
+\end_layout
+
+\begin_layout Standard
+The observables are 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+.
+ The goal is to identify 
+\begin_inset Formula $\beta$
+\end_inset
+
+ in the relationship,
+\begin_inset Formula 
+\begin{align}
+y_{it} & =x_{it}'\beta+w_{it}'\gamma+\epsilon_{it}+\nu_{it},\quad\nu_{it}\sim\text{iid},\quad\nu_{it}\text{ is serially independent}\\
+x_{it} & =\gamma\epsilon_{it}+\left(1-\gamma\right)u_{it},\quad u_{it}\sim\text{iid},\quad u_{it}\text{ is serially dependent}\\
+\epsilon_{it} & =\rho\epsilon_{it-1}+\eta_{it},\quad\eta_{it}\sim\text{iid},\quad\eta_{it}\text{ is serially independent}
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula $w_{it}$
+\end_inset
+
+ includes a constant.
+\end_layout
+
+\begin_layout Subsection*
+2) Identification:
+\end_layout
+
+\begin_layout Standard
+The usual argument for identification is based on the quasi-difference expressio
+n:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-1cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+\begin_inset Formula 
+\begin{align}
+\left(y_{it}-\rho y_{it-1}\right) & =\left(x_{it}-\rho x_{it-1}\right)'\beta+\left(w_{it}-\rho w_{it-1}\right)'\delta+\eta_{it}
+\end{align}
+
+\end_inset
+
+GMM Approach: 
+\end_layout
+
+\begin_layout Standard
+For any guess 
+\begin_inset Formula $\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)$
+\end_inset
+
+, we can define the guess of 
+\begin_inset Formula $\eta_{it}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\hat{\eta}_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right) & \equiv\left(y_{it}-\hat{\rho}y_{it-1}\right)-\left(x_{it}-\hat{\rho}x_{it-1}\right)'\hat{\beta}-\left(w_{it}-\rho w_{it-1}\right)'\hat{\delta}
+\end{align}
+
+\end_inset
+
+Then,
+\begin_inset Formula 
+\begin{equation}
+\left(\beta,\delta,\rho\right)\quad\text{ solves }\quad\mathbb{E}\left[\left(w_{it},z_{it}\right)\;\hat{\eta}_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\right]=0
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $z_{it}$
+\end_inset
+
+ includes variables that are independent of 
+\begin_inset Formula $\eta_{it}$
+\end_inset
+
+.
+ The standard choices of instruments are 
+\begin_inset Formula $z_{it}=\left(x_{it-1},y_{it-1}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{it}=\left(x_{it-1},x_{it-2}\right)$
+\end_inset
+
+.
+ Note that the number of instruments 
+\begin_inset Formula $z_{it}$
+\end_inset
+
+ needs to be one more than the number of enodgenous variables in 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Panel IV Approach:
+\end_layout
+
+\begin_layout Standard
+An alternative approach is to rearrange Equation (4) as a panel regression:
+\begin_inset Formula 
+\begin{align}
+y_{it} & =y_{it-1}(\rho)+x_{it}'(\beta)+x_{it-1}'(-\rho\beta)+w_{it}'(\delta)+w_{it-1}'(-\rho\delta)+\eta_{it}
+\end{align}
+
+\end_inset
+
+The only source of endogeneity in this regression is that 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+ depends on 
+\begin_inset Formula $\eta_{it}$
+\end_inset
+
+.
+ This implies that 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is identified by a regression of 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ on 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+, controlling for 
+\begin_inset Formula $\left(y_{it-1},x_{it-1},w_{it},w_{it-1}\right)$
+\end_inset
+
+, and instrumented by 
+\begin_inset Formula $z_{it}=\left(x_{it-2}\right)$
+\end_inset
+
+ or 
+\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+3) Simulation Exercise:
+\end_layout
+
+\begin_layout Standard
+In order to compare the estimation approaches, Figure 1 simulates the model
+ defined above.
+ It sets 
+\begin_inset Formula $\beta=(0.5,-0.2)$
+\end_inset
+
+, 
+\begin_inset Formula $\delta=1$
+\end_inset
+
+, 
+\begin_inset Formula $\rho=0.5$
+\end_inset
+
+, 
+\begin_inset Formula $\gamma=0.5$
+\end_inset
+
+, 
+\begin_inset Formula $\eta_{it}\sim\mathcal{N}(0,1)$
+\end_inset
+
+, 
+\begin_inset Formula $u_{it}=u_{it-1}+\mathcal{N}(0,1)$
+\end_inset
+
+, and 
+\begin_inset Formula $\nu_{it}=0$
+\end_inset
+
+.
+ The length of the panel is 
+\begin_inset Formula $T=3$
+\end_inset
+
+, which is the minimum required.
+ For various choices of 
+\begin_inset Formula $N$
+\end_inset
+
+, it draws 10 random samples from the model, applies the estimators, and
+ presents the box-plot of the distribution of estimates.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename AR1_simulation_results1.png
+	lyxscale 10
+	width 90line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename AR1_simulation_results2.png
+	lyxscale 10
+	width 90line%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Simulation Exercise
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

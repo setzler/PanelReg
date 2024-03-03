@@ -1,0 +1,321 @@
+"Method","N","Seed","Estimate1","Estimate2","Size","Approach"
+"PanelIV",10000,1,0.433186,-0.13594,"10","Panel IV: X only"
+"PanelIV",10000,2,0.360566,-0.183593,"10","Panel IV: X only"
+"PanelIV",10000,3,0.658455,-0.149891,"10","Panel IV: X only"
+"PanelIV",10000,4,0.500418,-0.203033,"10","Panel IV: X only"
+"PanelIV",10000,5,0.453646,-0.168357,"10","Panel IV: X only"
+"PanelIV",10000,6,0.633907,-0.098796,"10","Panel IV: X only"
+"PanelIV",10000,7,0.409884,-0.245373,"10","Panel IV: X only"
+"PanelIV",10000,8,0.354929,-0.206438,"10","Panel IV: X only"
+"PanelIV",10000,9,-0.00063,-0.242502,"10","Panel IV: X only"
+"PanelIV",10000,10,0.38302,-0.222152,"10","Panel IV: X only"
+"PanelIV",20000,1,0.423229,-0.200093,"20","Panel IV: X only"
+"PanelIV",20000,2,0.340441,-0.224254,"20","Panel IV: X only"
+"PanelIV",20000,3,0.56233,-0.205701,"20","Panel IV: X only"
+"PanelIV",20000,4,0.461109,-0.163912,"20","Panel IV: X only"
+"PanelIV",20000,5,0.633735,-0.192292,"20","Panel IV: X only"
+"PanelIV",20000,6,0.519704,-0.226984,"20","Panel IV: X only"
+"PanelIV",20000,7,0.397242,-0.234819,"20","Panel IV: X only"
+"PanelIV",20000,8,0.479232,-0.189347,"20","Panel IV: X only"
+"PanelIV",20000,9,0.548221,-0.154847,"20","Panel IV: X only"
+"PanelIV",20000,10,0.515454,-0.197674,"20","Panel IV: X only"
+"PanelIV",50000,1,0.480396,-0.175242,"50","Panel IV: X only"
+"PanelIV",50000,2,0.514518,-0.171945,"50","Panel IV: X only"
+"PanelIV",50000,3,0.502687,-0.182914,"50","Panel IV: X only"
+"PanelIV",50000,4,0.538328,-0.232032,"50","Panel IV: X only"
+"PanelIV",50000,5,0.558816,-0.199499,"50","Panel IV: X only"
+"PanelIV",50000,6,0.504448,-0.184345,"50","Panel IV: X only"
+"PanelIV",50000,7,0.523041,-0.197788,"50","Panel IV: X only"
+"PanelIV",50000,8,0.611913,-0.204313,"50","Panel IV: X only"
+"PanelIV",50000,9,0.389301,-0.185706,"50","Panel IV: X only"
+"PanelIV",50000,10,0.542958,-0.172347,"50","Panel IV: X only"
+"PanelIV",100000,1,0.494019,-0.203241,"100","Panel IV: X only"
+"PanelIV",100000,2,0.518502,-0.2084,"100","Panel IV: X only"
+"PanelIV",100000,3,0.487716,-0.199288,"100","Panel IV: X only"
+"PanelIV",100000,4,0.502487,-0.21662,"100","Panel IV: X only"
+"PanelIV",100000,5,0.499412,-0.188287,"100","Panel IV: X only"
+"PanelIV",100000,6,0.475787,-0.188025,"100","Panel IV: X only"
+"PanelIV",100000,7,0.446343,-0.202146,"100","Panel IV: X only"
+"PanelIV",100000,8,0.498193,-0.206682,"100","Panel IV: X only"
+"PanelIV",100000,9,0.511031,-0.211974,"100","Panel IV: X only"
+"PanelIV",100000,10,0.524586,-0.206935,"100","Panel IV: X only"
+"PanelIVy",10000,1,0.442933,-0.135915,"10","Panel IV: X and Y"
+"PanelIVy",10000,2,0.38766,-0.177509,"10","Panel IV: X and Y"
+"PanelIVy",10000,3,0.61736,-0.155599,"10","Panel IV: X and Y"
+"PanelIVy",10000,4,0.466685,-0.208754,"10","Panel IV: X and Y"
+"PanelIVy",10000,5,0.418635,-0.179139,"10","Panel IV: X and Y"
+"PanelIVy",10000,6,0.549989,-0.111541,"10","Panel IV: X and Y"
+"PanelIVy",10000,7,0.533152,-0.209085,"10","Panel IV: X and Y"
+"PanelIVy",10000,8,0.408442,-0.185331,"10","Panel IV: X and Y"
+"PanelIVy",10000,9,0.257515,-0.178958,"10","Panel IV: X and Y"
+"PanelIVy",10000,10,0.381921,-0.22219,"10","Panel IV: X and Y"
+"PanelIVy",20000,1,0.511026,-0.178605,"20","Panel IV: X and Y"
+"PanelIVy",20000,2,0.415357,-0.203723,"20","Panel IV: X and Y"
+"PanelIVy",20000,3,0.546587,-0.210281,"20","Panel IV: X and Y"
+"PanelIVy",20000,4,0.45322,-0.165866,"20","Panel IV: X and Y"
+"PanelIVy",20000,5,0.597373,-0.201756,"20","Panel IV: X and Y"
+"PanelIVy",20000,6,0.46555,-0.246174,"20","Panel IV: X and Y"
+"PanelIVy",20000,7,0.424742,-0.227749,"20","Panel IV: X and Y"
+"PanelIVy",20000,8,0.49456,-0.182806,"20","Panel IV: X and Y"
+"PanelIVy",20000,9,0.551161,-0.154238,"20","Panel IV: X and Y"
+"PanelIVy",20000,10,0.488813,-0.20499,"20","Panel IV: X and Y"
+"PanelIVy",50000,1,0.513151,-0.168091,"50","Panel IV: X and Y"
+"PanelIVy",50000,2,0.516427,-0.171484,"50","Panel IV: X and Y"
+"PanelIVy",50000,3,0.483799,-0.187293,"50","Panel IV: X and Y"
+"PanelIVy",50000,4,0.536941,-0.232387,"50","Panel IV: X and Y"
+"PanelIVy",50000,5,0.542688,-0.204384,"50","Panel IV: X and Y"
+"PanelIVy",50000,6,0.473601,-0.193113,"50","Panel IV: X and Y"
+"PanelIVy",50000,7,0.508164,-0.199431,"50","Panel IV: X and Y"
+"PanelIVy",50000,8,0.599888,-0.207691,"50","Panel IV: X and Y"
+"PanelIVy",50000,9,0.410774,-0.179153,"50","Panel IV: X and Y"
+"PanelIVy",50000,10,0.525021,-0.176663,"50","Panel IV: X and Y"
+"PanelIVy",100000,1,0.480481,-0.20659,"100","Panel IV: X and Y"
+"PanelIVy",100000,2,0.529802,-0.205576,"100","Panel IV: X and Y"
+"PanelIVy",100000,3,0.469642,-0.204156,"100","Panel IV: X and Y"
+"PanelIVy",100000,4,0.509258,-0.214741,"100","Panel IV: X and Y"
+"PanelIVy",100000,5,0.50129,-0.187829,"100","Panel IV: X and Y"
+"PanelIVy",100000,6,0.496526,-0.182023,"100","Panel IV: X and Y"
+"PanelIVy",100000,7,0.483772,-0.193006,"100","Panel IV: X and Y"
+"PanelIVy",100000,8,0.481291,-0.210058,"100","Panel IV: X and Y"
+"PanelIVy",100000,9,0.533082,-0.206341,"100","Panel IV: X and Y"
+"PanelIVy",100000,10,0.538656,-0.203655,"100","Panel IV: X and Y"
+"GMM_lag1y",10000,1,0.463519,-0.211219,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,2,0.468106,-0.222666,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,3,0.500822,-0.229815,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,4,0.513694,-0.186009,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,5,0.48978,-0.196451,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,6,0.493317,-0.201605,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,7,0.500915,-0.199043,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,8,0.478711,-0.215643,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,9,0.5067,-0.204537,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",10000,10,0.49838,-0.176667,"10","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,1,0.496986,-0.180553,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,2,0.496523,-0.237882,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,3,0.481217,-0.212579,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,4,0.46962,-0.190142,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,5,0.491061,-0.214264,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,6,0.526326,-0.180141,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,7,0.492853,-0.230511,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,8,0.495527,-0.188846,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,9,0.491417,-0.195116,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",20000,10,2.769298,-0.279016,"20","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,1,0.502571,-0.1984,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,2,0.497561,-0.184719,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,3,0.507594,-0.201694,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,4,0.51047,-0.180838,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,5,0.502169,-0.20445,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,6,0.492617,-0.187417,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,7,0.511855,-0.191603,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,8,0.514345,-0.197527,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,9,0.497902,-0.195054,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",50000,10,0.492335,-0.191385,"50","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,1,0.49155,-0.208666,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,2,0.501774,-0.206641,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,3,0.494296,-0.213927,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,4,0.500507,-0.198188,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,5,0.48539,-0.198755,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,6,0.488403,-0.204788,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,7,0.496749,-0.208155,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,8,0.503563,-0.203824,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,9,0.495641,-0.203,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag1y",100000,10,0.499072,-0.209123,"100","GMM, IV:
+Lag 1 of X & Y"
+"GMM_lag2",10000,1,0.532208,-0.171643,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,2,0.599729,-0.148209,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,3,0.516446,-0.231226,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,4,0.460071,-0.217096,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,5,0.560919,-0.160509,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,6,0.491534,-0.215851,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,7,0.600719,-0.143105,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,8,0.594678,-0.154001,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,9,0.643149,-0.132467,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",10000,10,0.600975,-0.134537,"10","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,1,0.574941,-0.14675,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,2,0.602258,-0.160003,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,3,0.427412,-0.260041,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,4,0.495713,-0.177741,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,5,0.452799,-0.256412,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,6,0.499182,-0.198373,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,7,0.5924,-0.163222,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,8,0.528913,-0.172361,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,9,0.519926,-0.186081,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",20000,10,0.52282,-0.211939,"20","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,1,0.550982,-0.172845,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,2,0.487458,-0.191173,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,3,0.544971,-0.180933,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,4,0.405041,-0.262524,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,5,0.451545,-0.245449,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,6,0.476657,-0.197052,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,7,0.478516,-0.211133,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,8,0.431747,-0.266771,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,9,0.597635,-0.144231,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",50000,10,0.478788,-0.205218,"50","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,1,0.501642,-0.202678,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,2,0.479422,-0.222607,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,3,0.530186,-0.191871,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,4,0.432981,-0.241768,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,5,0.496821,-0.194245,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,6,0.528143,-0.182343,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,7,0.56949,-0.165644,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,8,0.501222,-0.204626,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,9,0.456926,-0.229637,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2",100000,10,0.476694,-0.225182,"100","GMM, IV:
+Lag 1-2 of X"
+"GMM_lag2y",10000,1,0.460959,-0.202841,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,2,0.479594,-0.193087,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,3,0.465876,-0.271302,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,4,0.508334,-0.192409,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,5,0.481521,-0.198263,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,6,0.454568,-0.240876,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,7,0.531409,-0.164398,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,8,0.501551,-0.17649,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,9,0.5575,-0.1178,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",10000,10,0.512827,-0.15923,"10","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,1,0.517435,-0.154926,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,2,0.52283,-0.190896,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,3,0.47065,-0.231227,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,4,0.466247,-0.189711,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,5,0.465196,-0.2518,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,6,0.522619,-0.189346,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,7,0.507551,-0.207475,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,8,0.501023,-0.181434,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,9,0.482122,-0.204565,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",20000,10,0.47028,-0.250472,"20","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,1,0.508023,-0.188601,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,2,0.495537,-0.186866,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,3,0.501846,-0.205009,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,4,0.513534,-0.185889,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,5,0.494192,-0.218178,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,6,0.485095,-0.196258,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,7,0.509329,-0.195556,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,8,0.504884,-0.217006,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,9,0.508896,-0.171856,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",50000,10,0.480462,-0.206335,"50","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,1,0.487968,-0.212253,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,2,0.502648,-0.207296,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,3,0.489075,-0.217431,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,4,0.503744,-0.196921,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,5,0.483095,-0.201422,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,6,0.49203,-0.197764,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,7,0.507426,-0.191223,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,8,0.501231,-0.206221,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,9,0.499835,-0.200946,"100","GMM, IV:
+Lag 1-2 of X & Y"
+"GMM_lag2y",100000,10,0.499402,-0.210667,"100","GMM, IV:
+Lag 1-2 of X & Y"
