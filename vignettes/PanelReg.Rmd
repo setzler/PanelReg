@@ -106,7 +106,7 @@ varnames = list(
 
 ### 3. The "FE" model
 
-The error term is given by $\epsilon_{it} = \alpha_i$. The data can be simulated as follows:
+The error term is given by $\epsilon_{it} = \bar\epsilon_i, \forall t$. The data can be simulated as follows:
 
 
 ```{r echo=T, eval=T, message=FALSE}
@@ -232,22 +232,6 @@ head(reg)
 
 
 
-Estimating the model as if it were the "iid" model, the biased estimates are as follows:
-
-```{r echo=T, eval=T, message=FALSE}
-reg = PanelReg(panel_data = simulated_data, panel_model = "iid", varnames = varnames)
-head(reg)
-```
-
-Estimating the model as if it were the "MA1" model, the biased estimates are as follows:
-
-```{r echo=T, eval=T, message=FALSE}
-reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
-head(reg)
-```
-
-
-
 The package provides two strategies for estimating the AR(1) model: Panel IV and GMM.
 
 **Panel IV:** The error structure implies that, $$ y_{it} = \rho y_{it-1} + x_{it}'\beta +  x_{it-1}'(-\beta\rho) +  x_{it}'\gamma + x_{it-1}'(-\gamma\rho) + \eta_{it}$$ Since only $x_{it}$ depends on the unobservable $\eta_{it}$, and lagged values of $x$ are independent of contemporaneous $\eta$, it follows that $\beta$ can be estimated by a regression of $y_{it}$ on $x_{it}$, with instrument $x_{it-2}$, controlling for $(y_{it-1}, x_{it-1}, w_{it-1})$. Another available instrument is $y_{it-2}$, so there is an option to use the lagged outcome as an IV as well. 
@@ -285,10 +269,9 @@ AR1_options = list(
   AR1_IV_lags = 2
 )
 
-# not run:
-#reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", 
-#               varnames = varnames, AR1_options = AR1_options)
-#head(reg)
+reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", 
+               varnames = varnames, AR1_options = AR1_options)
+head(reg)
 ```
 
 Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by both "AR1" implementations.
@@ -315,7 +298,7 @@ reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames 
 head(reg)
 ```
 
-To control for covariates, we add their names to the varnames list in the `$covariate_names` argument:
+To control linearly for covariates, we add their names to the varnames list in the `$covariate_names` argument:
 
 
 ```{r echo=T, eval=T, message=FALSE}
