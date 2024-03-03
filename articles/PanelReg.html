@@ -148,7 +148,7 @@ specification.</li>
 <code>PanelReg</code>: Estimate <span class="math inline">\(\beta\)</span> given an assumed model.</li>
 </ul>
 <p>In order to use PanelReg, we must first define the variable names.
-The required variable names are:</p>
+The variable names are:</p>
 <ul>
 <li>
 <code>id_name</code>: The name of the variable that indexes the
@@ -162,8 +162,13 @@ time period.</li>
 <code>endogenous_names</code>: A vector of the names of the
 endogenous regressors.</li>
 <li>
-<code>covariate_names</code>: A vector of the names of the exogenous
-regressors. This is the only optional variable name.</li>
+<code>covariate_names</code>: A vector of the names of the
+covariates that should be controlled linearly. This argument is
+optional.</li>
+<li>
+<code>fixedeffect_names</code>: A vector of the names of the
+covariates that should be controlled by forming discrete group
+indicators and estimating fixed-effects. Optional.</li>
 </ul>
 <p>The following code block defines the variable names for the examples
 below:</p>
