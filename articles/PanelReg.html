@@ -126,7 +126,7 @@ serially-independent shock that is independent of <span class="math inline">\(x_
 <p>The “model” refers to the assumed time-series process governing <span class="math inline">\(\epsilon_{it}\)</span>:</p>
 <ol style="list-style-type: decimal">
 <li>Fixed Effects (“FE”): <span class="math inline">\(\epsilon_{it} =
-\alpha_i\)</span>.</li>
+\bar\epsilon_i, \forall t\)</span>.</li>
 <li>Serially Independent (“iid”): <span class="math inline">\(\epsilon_{it} = \eta_{it}\)</span>.</li>
 <li>Moving Average of Order 1 (“MA1”): <span class="math inline">\(\epsilon_{it} = \eta_{it} + \theta
 \eta_{it-1}\)</span>.</li>
@@ -184,24 +184,23 @@ below:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"FE"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">10000</span>, </span>
 <span>                             min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2006</span>, true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    unit_id time_id  outcome endog_var1 endog_var2</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;    &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1    2003 1.797459   3.215460  5.1756350</span></span>
-<span><span class="co">#&gt; 2:       1    2004 5.832963   4.512461  2.9302959</span></span>
-<span><span class="co">#&gt; 3:       1    2005 2.252843   4.510639  4.7811913</span></span>
-<span><span class="co">#&gt; 4:       1    2006 2.254339   3.823210  6.2593176</span></span>
-<span><span class="co">#&gt; 5:       2    2003 1.309357   2.266071  0.8602314</span></span>
-<span><span class="co">#&gt; 6:       2    2004 1.489940   3.104535  2.4039799</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:       1    2003 1.795087   3.215460  5.1756350</span></span>
+<span><span class="co">#&gt; 2:       1    2004 5.823856   4.512461  2.9302959</span></span>
+<span><span class="co">#&gt; 3:       1    2005 2.245744   4.510639  4.7811913</span></span>
+<span><span class="co">#&gt; 4:       1    2006 2.249095   3.823210  6.2593176</span></span>
+<span><span class="co">#&gt; 5:       2    2003 1.306986   2.266071  0.8602314</span></span>
+<span><span class="co">#&gt; 6:       2    2004 1.480833   3.104535  2.4039799</span></span></code></pre></div>
 <p>Ignoring the endogeneity, the biased estimates are as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"exogenous"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.626710 0.004945 126.73009      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.142894 0.004849 -29.46713      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.626713 0.004945 126.73062      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.142894 0.004849 -29.46725      0</span></span></code></pre></div>
 <p>The first-difference of the model is,</p>
 <p><span class="math display">\[
 y_{it} - y_{it-1} = (x_{it} - x_{it-1})'\beta + (w_{it} -
@@ -215,8 +214,8 @@ estimated without an instrument. The implementation is as follows:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.491472 0.008197  59.95752      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.205604 0.006836 -30.07640      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.491471 0.008197  59.95746      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.205604 0.006836 -30.07633      0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-iid-model">4. The “iid” model<a class="anchor" aria-label="anchor" href="#the-iid-model"></a>
@@ -226,24 +225,23 @@ estimated without an instrument. The implementation is as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"iid"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">10000</span>, </span>
 <span>                             min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2006</span>, true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    unit_id time_id  outcome endog_var1  endog_var2</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;    &lt;num&gt;      &lt;num&gt;       &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1    2003 1.929295   2.838065  1.99528333</span></span>
-<span><span class="co">#&gt; 2:       1    2004 5.128384   3.030035  0.07371323</span></span>
-<span><span class="co">#&gt; 3:       1    2005 1.299690   2.435264 -1.50636137</span></span>
-<span><span class="co">#&gt; 4:       1    2006 2.982400   3.424700 -0.25137488</span></span>
-<span><span class="co">#&gt; 5:       2    2003 3.199773   4.379467  2.34207665</span></span>
-<span><span class="co">#&gt; 6:       2    2004 3.425321   4.196123  2.10616311</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:       1    2003 1.945048   2.845617  1.99905937</span></span>
+<span><span class="co">#&gt; 2:       1    2004 5.132852   3.035692  0.07654142</span></span>
+<span><span class="co">#&gt; 3:       1    2005 1.294685   2.436137 -1.50592506</span></span>
+<span><span class="co">#&gt; 4:       1    2006 2.984519   3.427768 -0.24984091</span></span>
+<span><span class="co">#&gt; 5:       2    2003 3.215526   4.387019  2.34585268</span></span>
+<span><span class="co">#&gt; 6:       2    2004 3.429790   4.201779  2.10899130</span></span></code></pre></div>
 <p>Ignoring the endogeneity, the biased estimates are as follows:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"exogenous"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
-<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.622355 0.004918 126.54661      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.142607 0.004824 -29.56163      0</span></span></code></pre></div>
+<span><span class="co">#&gt;      Variable  Estimate       SE   tvalue pvalue</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;    &lt;num&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: endog_var1  0.622363 0.004918 126.5487      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.142604 0.004824 -29.5611      0</span></span></code></pre></div>
 <p>The contemporaneous <span class="math inline">\(x_{it}\)</span>
 depends on <span class="math inline">\(\eta_{it}\)</span>, but its lag
 <span class="math inline">\(x_{it-1}\)</span> is independent of <span class="math inline">\(\eta_{it}\)</span>. Since <span class="math inline">\(x_{it-1}\)</span> is a valid instrument, we can
@@ -251,12 +249,11 @@ estimate <span class="math inline">\(\beta\)</span> by regressing <span class="m
 follows:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"iid"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.490619 0.007004  70.05026      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.204615 0.007157 -28.59118      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.490617 0.007004  70.04914      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.204601 0.007157 -28.58936      0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-ma1-model">5. The “MA1” model<a class="anchor" aria-label="anchor" href="#the-ma1-model"></a>
@@ -267,25 +264,24 @@ follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"MA1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">10000</span>, </span>
 <span>                             min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2006</span>, true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Key: &lt;unit_id, time_id&gt;</span></span>
 <span><span class="co">#&gt;    unit_id time_id  outcome endog_var1 endog_var2</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;    &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1    2003 1.929295   2.838065  1.9952833</span></span>
-<span><span class="co">#&gt; 2:       1    2004 5.408838   3.146891  0.1321411</span></span>
-<span><span class="co">#&gt; 3:       1    2005 1.448656   2.497334 -1.4753267</span></span>
-<span><span class="co">#&gt; 4:       1    2006 2.748390   3.327196 -0.3001270</span></span>
-<span><span class="co">#&gt; 5:       2    2003 3.199773   4.379467  2.3420766</span></span>
-<span><span class="co">#&gt; 6:       2    2004 3.849078   4.372688  2.1944457</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:       1    2003 1.945048   2.845617  1.9990594</span></span>
+<span><span class="co">#&gt; 2:       1    2004 5.422369   3.156323  0.1368573</span></span>
+<span><span class="co">#&gt; 3:       1    2005 1.450439   2.501035 -1.4734763</span></span>
+<span><span class="co">#&gt; 4:       1    2006 2.751556   3.330700 -0.2983749</span></span>
+<span><span class="co">#&gt; 5:       2    2003 3.215526   4.387019  2.3458527</span></span>
+<span><span class="co">#&gt; 6:       2    2004 3.862609   4.382120  2.1991619</span></span></code></pre></div>
 <p>Ignoring the endogeneity, the biased estimates are as follows:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"exogenous"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.652539 0.005140 126.96545      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.130209 0.005077 -25.64695      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.652541 0.005140 126.96586      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.130208 0.005077 -25.64685      0</span></span></code></pre></div>
 <p>Estimating the model as if it were the “iid” model, the biased
 estimates are as follows:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -293,8 +289,8 @@ estimates are as follows:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.587912 0.006969  84.36152      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.158252 0.007341 -21.55651      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.587912 0.006969  84.36064      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.158248 0.007341 -21.55606      0</span></span></code></pre></div>
 <p>Similarly to the “iid” case, we can use that lagged values of <span class="math inline">\(x\)</span> are valid instruments for
 contemporaneous <span class="math inline">\(x\)</span>. Since <span class="math inline">\(\epsilon\)</span> is only serially dependent for
 adjacent periods (<span class="math inline">\(\epsilon_{it}\)</span> is
@@ -305,12 +301,11 @@ instruments. The implementation thus uses <span class="math inline">\(x_{it-2}\)
 implementation is as follows:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.495611 0.010123  48.95919      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.200817 0.010273 -19.54823      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.495613 0.010123  48.95962      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.200823 0.010273 -19.54888      0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-ar1-model">6. The “AR1” model<a class="anchor" aria-label="anchor" href="#the-ar1-model"></a>
@@ -319,27 +314,26 @@ implementation is as follows:</p>
 = \rho\epsilon_{it-1} + \eta_{it}\)</span>. The data can be simulated as
 follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"AR1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">100000</span>, noise_sd<span class="op">=</span><span class="fl">0</span>, </span>
+<code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"AR1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">100000</span>, noise_sd <span class="op">=</span> <span class="fl">0</span>, </span>
 <span>                             min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2008</span>, true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Key: &lt;unit_id&gt;</span></span>
 <span><span class="co">#&gt;    unit_id time_id     outcome endog_var1 endog_var2</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;       &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1    2003  0.22310355  2.1513782   5.519912</span></span>
-<span><span class="co">#&gt; 2:       1    2004  0.04373321 -0.2229055   3.651452</span></span>
-<span><span class="co">#&gt; 3:       1    2005 -0.11135351 -0.8057516   4.704462</span></span>
-<span><span class="co">#&gt; 4:       1    2006  0.05702288 -0.7722665   2.997190</span></span>
-<span><span class="co">#&gt; 5:       1    2007  0.87868944 -1.5009146   2.464164</span></span>
-<span><span class="co">#&gt; 6:       1    2008  0.45846618 -0.8560450   4.653757</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:       1    2003  0.22466635  2.1520294   5.520237</span></span>
+<span><span class="co">#&gt; 2:       1    2004  0.05077318 -0.2199722   3.652919</span></span>
+<span><span class="co">#&gt; 3:       1    2005 -0.10854935 -0.8045832   4.705047</span></span>
+<span><span class="co">#&gt; 4:       1    2006  0.05910678 -0.7713982   2.997624</span></span>
+<span><span class="co">#&gt; 5:       1    2007  0.87267190 -1.5034220   2.462910</span></span>
+<span><span class="co">#&gt; 6:       1    2008  0.46235714 -0.8544238   4.654568</span></span></code></pre></div>
 <p>Ignoring the endogeneity, the biased estimates are as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"exogenous"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.630611 0.000776  812.4119      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.136847 0.000777 -176.2153      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.630612 0.000776  812.4104      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.136846 0.000777 -176.2136      0</span></span></code></pre></div>
 <p>Estimating the model as if it were the “iid” model, the biased
 estimates are as follows:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -347,8 +341,8 @@ estimates are as follows:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.592757 0.000967  612.7980      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.150982 0.001018 -148.3766      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.592759 0.000967  612.7977      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.150984 0.001018 -148.3779      0</span></span></code></pre></div>
 <p>Estimating the model as if it were the “MA1” model, the biased
 estimates are as follows:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -356,8 +350,8 @@ estimates are as follows:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: endog_var1  0.570951 0.001200  475.6527      0</span></span>
-<span><span class="co">#&gt; 2: endog_var2 -0.160632 0.001254 -128.1010      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1: endog_var1  0.570949 0.001200  475.6483      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.160633 0.001254 -128.1006      0</span></span></code></pre></div>
 <p>The package provides two strategies for estimating the AR(1) model:
 Panel IV and GMM.</p>
 <p><strong>Panel IV:</strong> The error structure implies that, <span class="math display">\[ y_{it} = \rho y_{it-1} + x_{it}'\beta
@@ -400,15 +394,14 @@ IVs:</p>
 <span>  AR1_IV_outcome <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span>, </span>
-<span>AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
-<span></span>
+<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, </span>
+<span>               varnames <span class="op">=</span> <span class="va">varnames</span>, AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      endog_var1  0.504755 0.009623  52.45215      0</span></span>
-<span><span class="co">#&gt; 2:      endog_var2 -0.191960 0.005660 -33.91443      0</span></span>
-<span><span class="co">#&gt; 3: AR1_persistence  0.499293 0.002572 194.13448      0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:      endog_var1  0.504678 0.009624  52.44008      0</span></span>
+<span><span class="co">#&gt; 2:      endog_var2 -0.191934 0.005660 -33.90865      0</span></span>
+<span><span class="co">#&gt; 3: AR1_persistence  0.499271 0.002572 194.11347      0</span></span></code></pre></div>
 <p>Here is the GMM implementation, if using 2 lags and including lagged
 outcomes as IVs:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -418,67 +411,95 @@ outcomes as IVs:</p>
 <span>  AR1_IV_lags <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span>, </span>
-<span>AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           Variable  Estimate</span></span>
-<span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      endog_var1  0.500346</span></span>
-<span><span class="co">#&gt; 2:      endog_var2 -0.194480</span></span>
-<span><span class="co">#&gt; 3: AR1_persistence  0.497813</span></span></code></pre></div>
-<p>Note that an estimate of the AR(1) persistence parameter, <span class="math inline">\(\rho\)</span>, is returned by both method
-“AR1”.</p>
+<span><span class="co"># not run:</span></span>
+<span><span class="co">#reg = PanelReg(panel_data = simulated_data, panel_model = "AR1", </span></span>
+<span><span class="co">#               varnames = varnames, AR1_options = AR1_options)</span></span>
+<span><span class="co">#head(reg)</span></span></code></pre></div>
+<p>Note that an estimate of the AR(1) persistence parameter, <span class="math inline">\(\rho\)</span>, is returned by both “AR1”
+implementations.</p>
 </div>
 <div class="section level3">
 <h3 id="controlling-for-covariates">7. Controlling for covariates<a class="anchor" aria-label="anchor" href="#controlling-for-covariates"></a>
 </h3>
-<p>Consider again the “AR1” model. We can add covariates to the
+<p>Consider again the “MA1” model. We can add covariates to the
 simulated model by setting the <code>true_gamma</code> parameter:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"AR1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">20000</span>, </span>
+<code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"MA1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">20000</span>, </span>
 <span>                             noise_sd <span class="op">=</span> <span class="fl">0</span>, min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2009</span>, </span>
-<span>                             true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span>, true_gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span>                             true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span>, true_gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Key: &lt;unit_id&gt;</span></span>
+<span><span class="co">#&gt; Key: &lt;unit_id, time_id&gt;</span></span>
 <span><span class="co">#&gt;    unit_id time_id    outcome endog_var1 endog_var2  co_var1</span></span>
 <span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;      &lt;num&gt;      &lt;num&gt;      &lt;num&gt;    &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:       1    2003 -1.2243353   3.603220   3.044912 5.354628</span></span>
-<span><span class="co">#&gt; 2:       1    2004 -0.6788179   3.794424   1.597571 4.113133</span></span>
-<span><span class="co">#&gt; 3:       1    2005  1.2460489   4.266911   2.158675 2.650032</span></span>
-<span><span class="co">#&gt; 4:       1    2006 -0.1901712   6.271369   4.334303 6.002911</span></span>
-<span><span class="co">#&gt; 5:       1    2007  2.5888070   7.665698   5.465854 3.410830</span></span>
-<span><span class="co">#&gt; 6:       1    2008  1.6945940   6.363167   4.276865 4.330093</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:       1    2003 -2.7135175   3.692806   3.089706 4.381504</span></span>
+<span><span class="co">#&gt; 2:       1    2004 -1.6477992   3.836131   1.618425 3.125645</span></span>
+<span><span class="co">#&gt; 3:       1    2005  1.1258194   4.364428   2.207434 1.679287</span></span>
+<span><span class="co">#&gt; 4:       1    2006 -1.8655679   6.426635   4.411936 5.049490</span></span>
+<span><span class="co">#&gt; 5:       1    2007  1.9193863   7.682838   5.474424 2.415972</span></span>
+<span><span class="co">#&gt; 6:       1    2008  0.6587429   6.424688   4.307626 3.348549</span></span></code></pre></div>
 <p>If we do not control for the covariates, the estimation becomes
 biased:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">AR1_options</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  AR1_method <span class="op">=</span> <span class="st">"PanelIV"</span>,</span>
-<span>  AR1_IV_outcome <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span>, AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
-<span></span>
+<code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           Variable  Estimate       SE     tvalue pvalue</span></span>
-<span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      endog_var1  0.178258 0.023163   7.695812      0</span></span>
-<span><span class="co">#&gt; 2:      endog_var2 -0.210192 0.013292 -15.813682      0</span></span>
-<span><span class="co">#&gt; 3: AR1_persistence  0.385460 0.005390  71.519025      0</span></span></code></pre></div>
-<p>To control for covariates, we add their names to the varnames
-list:</p>
+<span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: endog_var1  0.202382 0.002967  68.20851      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.192727 0.003040 -63.39647      0</span></span></code></pre></div>
+<p>To control for covariates, we add their names to the varnames list in
+the <code>$covariate_names</code> argument:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">varnames</span><span class="op">$</span><span class="va">covariate_names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"co_var1"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span>, AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
-<span></span>
+<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           Variable  Estimate       SE    tvalue pvalue</span></span>
-<span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      endog_var1  0.460510 0.022811  20.18812      0</span></span>
-<span><span class="co">#&gt; 2:      endog_var2 -0.184835 0.010847 -17.03945      0</span></span>
-<span><span class="co">#&gt; 3: AR1_persistence  0.502494 0.005254  95.64507      0</span></span></code></pre></div>
+<span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: endog_var1  0.446453 0.003087 144.62458      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.195099 0.002293 -85.06807      0</span></span>
+<span></span>
+<span><span class="va">varnames</span><span class="op">$</span><span class="va">covariate_names</span> <span class="op">=</span> <span class="cn">NULL</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="controlling-for-group-fixed-effects">8. Controlling for group fixed-effects<a class="anchor" aria-label="anchor" href="#controlling-for-group-fixed-effects"></a>
+</h3>
+<p>Consider again the “iid” model. We can assign units to groups in the
+simulated model by setting the <code>true_FE_var</code> parameter:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">simulated_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelRegSim.html">PanelRegSim</a></span><span class="op">(</span>panel_model <span class="op">=</span> <span class="st">"MA1"</span>, seed <span class="op">=</span> <span class="fl">123</span>, sample_size <span class="op">=</span> <span class="fl">20000</span>, </span>
+<span>                             noise_sd <span class="op">=</span> <span class="fl">0</span>, min_year <span class="op">=</span> <span class="fl">2003</span>, max_year <span class="op">=</span> <span class="fl">2006</span>, </span>
+<span>                             true_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span>, true_FE_var <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Key: &lt;unit_id, time_id&gt;</span></span>
+<span><span class="co">#&gt;    unit_id time_id  outcome endog_var1 endog_var2 group_id</span></span>
+<span><span class="co">#&gt;      &lt;int&gt;   &lt;int&gt;    &lt;num&gt;      &lt;num&gt;      &lt;num&gt;    &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:       1    2003 2.164164   4.538057   4.154857        8</span></span>
+<span><span class="co">#&gt; 2:       1    2004 1.657456   4.629585   4.136924        8</span></span>
+<span><span class="co">#&gt; 3:       1    2005 2.525993   4.039492   4.223572        8</span></span>
+<span><span class="co">#&gt; 4:       1    2006 1.662304   2.647121   4.004157        8</span></span>
+<span><span class="co">#&gt; 5:       2    2003 1.572352   2.538215   2.378689        1</span></span>
+<span><span class="co">#&gt; 6:       2    2004 1.568349   4.604310   7.036519        1</span></span></code></pre></div>
+<p>If we do not control for the group identifiers, the estimation
+becomes biased by group fixed-effects:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: endog_var1  0.688029 0.004039 170.35801      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.194728 0.005354 -36.36807      0</span></span></code></pre></div>
+<p>To control for group fixed-effects, we add their names to the
+varnames list in the <code>$fixedeffect_names</code> argument:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">varnames</span><span class="op">$</span><span class="va">fixedeffect_names</span> <span class="op">=</span> <span class="st">"group_id"</span></span>
+<span></span>
+<span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, varnames <span class="op">=</span> <span class="va">varnames</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      Variable  Estimate       SE    tvalue pvalue</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: endog_var1  0.497393 0.005449  91.28265      0</span></span>
+<span><span class="co">#&gt; 2: endog_var2 -0.196151 0.005365 -36.56024      0</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

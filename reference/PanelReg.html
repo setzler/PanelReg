@@ -47,7 +47,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">PanelReg</span><span class="op">(</span></span>
 <span>  <span class="va">panel_data</span>,</span>
-<span>  panel_model <span class="op">=</span> <span class="st">"iid"</span>,</span>
+<span>  <span class="va">panel_model</span>,</span>
 <span>  <span class="va">varnames</span>,</span>
 <span>  AR1_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>AR1_method <span class="op">=</span> <span class="st">"PanelIV"</span>, AR1_IV_outcome <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -56,15 +56,15 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>panel_data</dt>
-<dd><p>(data.table) A data.table containing the panel data.</p></dd>
+<dd><p>(data.table) A data.table containing the panel data. It should be in "long" format, which means that each row is uniquely identified by a (id, time) combination.</p></dd>
 
 
 <dt>panel_model</dt>
-<dd><p>(character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1".</p></dd>
+<dd><p>(character) The panel model to estimate. Must be one of "exogenous", "iid", "FE", "MA1", or "AR1". See the package vignette for details.</p></dd>
 
 
 <dt>varnames</dt>
-<dd><p>(list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the exogenous variables. If covariate_names is NULL, then the model is estimated without exogenous variables.</p></dd>
+<dd><p>(list) A list containing the names of the variables in the panel_data. It must contain the following elements: id_name, time_name, outcome_name, and endogenous_names. Optionally, it also contains covariate_names and fixedeffect_names. The id_name and time_name are the names of the unit and time variables, respectively. The outcome_name is the name of the outcome variable. The endogenous_names is a character vector of the names of the endogenous variables. The covariate_names is a character vector of the names of the covariates to control linearly, and the fixedeffect_names is a character vector of the names of the covariates to control using discrete indicators. If covariate_names is NULL, then the model is estimated without linear covariates. If fixedeffect_names is NULL, then the model is estimated without fixed effects.</p></dd>
 
 
 <dt>AR1_options</dt>

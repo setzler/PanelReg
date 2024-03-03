@@ -47,7 +47,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">PanelRegSim</span><span class="op">(</span></span>
 <span>  seed <span class="op">=</span> <span class="fl">1234</span>,</span>
-<span>  sample_size <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  sample_size <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  min_year <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  max_year <span class="op">=</span> <span class="fl">2010</span>,</span>
 <span>  noise_sd <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -57,6 +57,7 @@
 <span>  MA1_persistence <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  AR1_persistence <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  true_gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  true_FE_var <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  return_unobservables <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -104,7 +105,11 @@
 
 
 <dt>true_gamma</dt>
-<dd><p>(numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).</p></dd>
+<dd><p>(numeric) The true value of the parameter for the exogenous variables. The first entry corresponds to the intercept. By default, true_gamma = c(1).If length(gamma) &gt; 1, then the function adds exogenous variables to the outcome that are correlated with the first endogenous variable.</p></dd>
+
+
+<dt>true_FE_var</dt>
+<dd><p>(numeric) The variance of the fixed effects. By default, true_FE_var = 0 so that there are no fixed effects. If true_FE_var &gt; 0, then the function adds fixed effects to the outcome that are correlated with the first endogenous variable.</p></dd>
 
 
 <dt>return_unobservables</dt>
