@@ -7,8 +7,8 @@ Panel Regressions in R
 
 ### Overview
 
-This package estimates panel regression models, which are models of the
-form,
+This package simulates and estimates a class of panel regression models
+of the form,
 $y_{it} = x_{it}' \beta + w_{it}' \gamma + \epsilon_{it} + \nu_{it}$.
 The parameter of interest is $\beta$, $x_{it}$ is the vector of
 endogenous regressors, $w_{it}$ is the vector of exogenous covariates,

@@ -40,7 +40,7 @@ library(fixest)
 
 ### 1. Models included in this package
 
-This package can simulate and estimate panel regression models of the following form:
+This package simulates and estimates a class of panel regression models of the following form:
 
 $$
 y_{it} = x_{it}'\beta + w_{it}'\gamma + \epsilon_{it} + \nu_{it},
