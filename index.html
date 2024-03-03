@@ -59,26 +59,21 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This package estimates panel regression models, which are models of the form,<span class="math display"><em>y</em><sub><em>i</em><em>t</em></sub> = <em>x</em><sub><em>i</em><em>t</em></sub>′<em>β</em> + <em>w</em><sub><em>i</em><em>t</em></sub>′<em>γ</em> + <em>ϵ</em><sub><em>i</em><em>t</em></sub> + <em>ν</em><sub><em>i</em><em>t</em></sub>,</span> The parameter of interest is <span class="math inline"><em>β</em></span>, <span class="math inline"><em>x</em><sub><em>i</em><em>t</em></sub></span> is the vector of endogenous regressors, <span class="math inline"><em>w</em><sub><em>i</em><em>t</em></sub></span> is the vector of exogenous covariates, <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub></span> is the endogenous unobservable, and <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is the exogenous unobservable (i.e. measurement error).</p>
+<p>This package estimates panel regression models, which are models of the form, <span class="math inline"><em>y</em><sub><em>i</em><em>t</em></sub> = <em>x</em><sub><em>i</em><em>t</em></sub>′<em>β</em> + <em>w</em><sub><em>i</em><em>t</em></sub>′<em>γ</em> + <em>ϵ</em><sub><em>i</em><em>t</em></sub> + <em>ν</em><sub><em>i</em><em>t</em></sub></span>. The parameter of interest is <span class="math inline"><em>β</em></span>, <span class="math inline"><em>x</em><sub><em>i</em><em>t</em></sub></span> is the vector of endogenous regressors, <span class="math inline"><em>w</em><sub><em>i</em><em>t</em></sub></span> is the vector of exogenous covariates, <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub></span> is the endogenous unobservable, and <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is the exogenous unobservable (i.e. measurement error).</p>
 <p>The purpose of this package is to provide a convenient estimator of <span class="math inline"><em>β</em></span> given the most common time-series process assumptions on <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub></span>, which are:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Fixed Effects Model (“FE”):</strong> <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>α</em><sub><em>i</em></sub></span>.</li>
-<li>
-<strong>Serially Independent Model (“iid”):</strong> <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
-<li>
-<strong>Moving Average Model of Order 1 (“MA1”):</strong> <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub> + <em>θ</em><em>η</em><sub><em>i</em><em>t</em> − 1</sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
-<li>
-<strong>First Order Autoregressive Model (“AR1”):</strong> <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>ρ</em><em>ϵ</em><sub><em>i</em><em>t</em> − 1</sub> + <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
+<li>Fixed Effects (“FE”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>α</em><sub><em>i</em></sub></span>.</li>
+<li>Serially Independent (“iid”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
+<li>Moving Average of Order 1 (“MA1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>η</em><sub><em>i</em><em>t</em></sub> + <em>θ</em><em>η</em><sub><em>i</em><em>t</em> − 1</sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
+<li>First Order Autoregressive (“AR1”): <span class="math inline"><em>ϵ</em><sub><em>i</em><em>t</em></sub> = <em>ρ</em><em>ϵ</em><sub><em>i</em><em>t</em> − 1</sub> + <em>η</em><sub><em>i</em><em>t</em></sub></span>, where <span class="math inline"><em>η</em><sub><em>i</em><em>t</em></sub></span> is exogenous.</li>
 </ol>
 <p>There are only 2 functions in this package:</p>
 <ol style="list-style-type: decimal">
 <li>
-<code><a href="reference/PanelReg.html">PanelReg()</a></code>: This function estimates the panel regression.</li>
+<code><a href="reference/PanelReg.html">PanelReg()</a></code>: This function estimates the panel regression. Documentation is available <a href="https://setzler.github.io/PanelReg/reference/PanelReg.html">here</a> or by running <code><a href="reference/PanelReg.html">?PanelReg</a></code> in R.</li>
 <li>
-<code><a href="reference/PanelRegSim.html">PanelRegSim()</a></code>: This function simulates data from a panel regression model.</li>
+<code><a href="reference/PanelRegSim.html">PanelRegSim()</a></code>: This function simulates data from a panel regression model. Documentation is available <a href="https://setzler.github.io/PanelReg/reference/PanelRegSim.html">here</a> or by running <code><a href="reference/PanelRegSim.html">?PanelRegSim</a></code> in R.</li>
 </ol>
-<p>Details for each function are available from the the Get Started page.</p>
 </div>
 <div class="section level2">
 <h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
@@ -96,21 +91,19 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="reference/PanelReg.html">PanelReg</a></span><span class="op">(</span><span class="va">panel_data</span>, panel_model <span class="op">=</span> <span class="st">"MA1"</span>, <span class="va">varnames</span><span class="op">)</span></span></code></pre></div>
 <p>The argument <code>panel_model</code> must be one of <code>"exogenous"</code>, <code>"FE"</code>, <code>"iid"</code>, <code>"MA1"</code>, or <code>"AR1"</code>.</p>
-<p>A detailed manual explaining the various features is available by running this command in R:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">?</span><span class="va">PanelReg</span></span></code></pre></div>
+<p>For complete examples and details on the estimators, see the <a href="https://setzler.github.io/PanelReg/articles/PanelReg.html">Get Started</a> page.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>To install the package from Github:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"setzler/PanelReg"</span><span class="op">)</span></span></code></pre></div>
 <p>To use the package after it is installed:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://setzler.github.io/PanelReg/">PanelReg</a></span><span class="op">)</span></span></code></pre></div>
 <p>Make sure these packages have been installed as well:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lrberge.github.io/fixest/" class="external-link">fixest</a></span><span class="op">)</span></span></code></pre></div>
 </div>
