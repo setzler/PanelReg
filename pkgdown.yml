@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   PanelReg: PanelReg.html
-last_built: 2024-03-04T16:30Z
+last_built: 2024-03-04T21:09Z
 urls:
   reference: https://setzler.github.io/PanelReg/reference
   article: https://setzler.github.io/PanelReg/articles
