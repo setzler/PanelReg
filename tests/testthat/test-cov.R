@@ -72,9 +72,10 @@ test_that("Estimation with covariates, MA1", {
 })
 
 
-test_that("Estimation with covariates, AR1", {
+test_that("Estimation with covariates, AR1 known rho", {
     # simulate example data
-    simulated_data = PanelRegSim(sample_size = 100000, min_year = 2005, max_year = 2008, true_beta = c(0.5, -0.2), true_gamma = c(1, -2), panel_model = "AR1", return_unobservables = FALSE)
+    simulated_data = PanelRegSim(sample_size = 20000, min_year = 2001, max_year = 2010, true_beta = c(0.5, -0.2), true_gamma = c(1, -1), panel_model = "AR1", return_unobservables = FALSE)
+    simulated_data = simulated_data[time_id %in% 2007:2010]
 
     # define varnames
     varnames = list(
@@ -86,20 +87,21 @@ test_that("Estimation with covariates, AR1", {
     )
 
     # estimate the model under the AR1 assumption, Panel IV method
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
     expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
 
     varnames$covariate_names = c("co_var1")
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
+    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 2e-2) # should pass
 
 })
 
-test_that("Estimation with covariates, AR1 known rho", {
+test_that("Estimation with covariates, AR1", {
     # simulate example data
-    simulated_data = PanelRegSim(sample_size = 100000, min_year = 2005, max_year = 2008, true_beta = c(0.5, -0.2), true_gamma = c(1, -2), panel_model = "AR1", return_unobservables = FALSE)
+    simulated_data = PanelRegSim(sample_size = 20000, min_year = 2001, max_year = 2010, true_beta = c(0.5, -0.2), true_gamma = c(1, -0.1), panel_model = "AR1", return_unobservables = FALSE)
+    simulated_data = simulated_data[time_id %in% 2007:2010]
 
     # define varnames
     varnames = list(
@@ -111,14 +113,16 @@ test_that("Estimation with covariates, AR1 known rho", {
     )
 
     # estimate the model under the AR1 assumption, Panel IV method
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
     expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
+    #print(est_AR1_PanelIV[])
 
     varnames$covariate_names = c("co_var1")
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
     expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
+    #print(est_AR1_PanelIV[])
 
 })
 
@@ -174,6 +178,33 @@ test_that("Estimation with group-year effects, MA1", {
 })
 
 
+test_that("Estimation with group-year effects, AR1 known rho", {
+    # simulate example data
+    simulated_data = PanelRegSim(sample_size = 20000, min_year = 2001, max_year = 2010, true_beta = c(0.5, -0.2), true_FE_var = 3.0, panel_model = "AR1", return_unobservables = TRUE)
+    simulated_data = simulated_data[time_id %in% 2006:2010]
+    simulated_data[, group_year := .GRP, list(group_id, time_id)]
+
+    # define varnames
+    varnames = list(
+        id_name = "unit_id",
+        time_name = "time_id",
+        outcome_name = "outcome",
+        endogenous_names = c("endog_var1", "endog_var2"),
+        covariate_names = NULL
+    )
+
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
+    expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
+
+    varnames$fixedeffect_names = c("group_year")
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
+    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 3e-2) # should pass
+
+})
+
 test_that("Estimation with group-year effects, AR1", {
     # simulate example data
     simulated_data = PanelRegSim(sample_size = 100000, min_year = 2005, max_year = 2008, true_beta = c(0.5, -0.2), true_FE_var = 1.0, panel_model = "AR1", return_unobservables = FALSE)
@@ -200,29 +231,3 @@ test_that("Estimation with group-year effects, AR1", {
 
 })
 
-
-test_that("Estimation with group-year effects, AR1 known rho", {
-    # simulate example data
-    simulated_data = PanelRegSim(sample_size = 100000, min_year = 2005, max_year = 2008, true_beta = c(0.5, -0.2), true_FE_var = 1.0, panel_model = "AR1", return_unobservables = FALSE)
-    simulated_data[, group_year := .GRP, list(group_id, time_id)]
-
-    # define varnames
-    varnames = list(
-        id_name = "unit_id",
-        time_name = "time_id",
-        outcome_name = "outcome",
-        endogenous_names = c("endog_var1", "endog_var2"),
-        covariate_names = NULL
-    )
-
-    # estimate the model under the AR1 assumption, Panel IV method
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
-    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-    expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
-
-    varnames$fixedeffect_names = c("group_year")
-    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
-    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
-
-})

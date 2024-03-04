@@ -37,7 +37,7 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
     ###############################################
 
     # construct a blank dataset with the appropriate identifier combinations
-    paneldata = data.table(expand.grid(unit_id = 1:sample_size, time_id = min_year:max_year))
+    paneldata = data.table(expand.grid(unit_id = 1:sample_size, time_id = (min_year - 2):max_year))
 
     # draw the noise variable (eta_it)
     paneldata[, measurement_error := rnorm(.N, sd = noise_sd)]
@@ -52,6 +52,7 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
         paneldata[, group_draw := runif(1), unit_id]
         paneldata[, group_id := ceiling(group_draw * 10)] # randomly assign 10 groups
         paneldata[, group_draw := NULL]
+        #paneldata[, group_FE := rnorm(1, sd = sqrt(true_FE_var)), by = c("group_id")]
         paneldata[, group_FE := rnorm(1, sd = sqrt(true_FE_var)), by = c("group_id", "time_id")]
     }
 
@@ -79,8 +80,8 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
     if (panel_model == "AR1") {
         # initialize the eps_it
         paneldata[, eps_it := 0.0]
-        paneldata[time_id == min_year, eps_it := shock/ (1 - AR1_persistence^2)]
-        for(tt in (min_year + 1):(max_year)) {
+        paneldata[time_id == (min_year - 2), eps_it := shock / (1 - AR1_persistence^2)]
+        for(tt in (min_year + 1 - 2):(max_year)) {
             # merge in the lagged eps_it
             paneldata_lag = paneldata[time_id == (tt - 1), list(unit_id, eps_it_lag = eps_it)]
             paneldata = merge(paneldata, paneldata_lag, by = "unit_id", all.x = TRUE)
@@ -141,6 +142,8 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
     ###############################################
     # 5. Return the Panel Data
     ###############################################
+
+    paneldata = paneldata[time_id >= min_year] # drop the 10 burn-off years
 
     if (return_unobservables) {
         return(paneldata)

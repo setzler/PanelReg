@@ -124,10 +124,10 @@ PanelReg <- function(panel_data, panel_model, varnames, AR1_options = list(AR1_m
     # estimate the AR1 model
     if (panel_model == "AR1") {
         if (AR1_method == "PanelIV") {
-            secondstage = PR.est.AR1.PanelIV(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, AR1_IV_outcome = AR1_IV_outcome, AR1_persistence = AR1_persistence)
+            secondstage = PR.est.AR1.PanelIV(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_outcome = AR1_IV_outcome, AR1_persistence = AR1_persistence)
         }
         if (AR1_method == "GMM") {
-            return(PR.est.AR1.GMM(panel_data, outcome_name, endogenous_names, covariate_names = covariate_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, AR1_persistence = AR1_persistence))
+            return(PR.est.AR1.GMM(panel_data, outcome_name, endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, AR1_persistence = AR1_persistence))
         }
     }
 
