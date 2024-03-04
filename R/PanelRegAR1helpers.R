@@ -49,7 +49,11 @@ PR.est.AR1.PanelIV.known_persistence <- function(panel_data, outcome_name, endog
 
 #' Internal function to estimate AR(1) model. It uses GMM to fit the IV moments. For a guess of beta and the AR1_persistence, it computes the unobserved shock using quasi-differences. u_{i,t} = (y_{i,t} - rho*y_{i,t-1}) - (X_{i,t} - rho*X_{i,t-1})'beta. Then it fits mean(u_{i,t} * X_{i,t-1}) = 0 using BFGS.
 #' @noRd
-PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
+PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
+    # not implemented yet
+    if(!is.null(fixedeffect_names)) {
+        stop("Stop: Fixed effects not implemented yet for AR(1) GMM estimator.")
+    }
     # number of endogenous variables
     n_endogenous = length(endogenous_names)
     n_exogenous = length(covariate_names)

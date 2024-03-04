@@ -313,12 +313,12 @@ varnames$covariate_names = NULL
 
 ### 8. Controlling for group fixed-effects 
 
-Consider again the "iid" model. We can assign units to groups in the simulated model by setting the `true_FE_var` parameter:
+Consider again the "iid" model. We can assign units to groups in the simulated model by setting the `true_FE_var` parameter. When the variance is positive, each unit ID is assigned to a group, and a group-by-time shock is drawn.
 
 ```{r echo=T, eval=T, message=FALSE}
 simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 20000, 
-                             noise_sd = 0, min_year = 2003, max_year = 2006, 
-                             true_beta = c(0.5, -0.2), true_FE_var = 1)
+                             noise_sd = 0, min_year = 2003, max_year = 2008, 
+                             true_beta = c(0.5, -0.2), true_FE_var = 5)
 head(simulated_data)
 ```
 
@@ -329,12 +329,15 @@ reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames 
 head(reg)
 ```
 
-To control for group fixed-effects, we add their names to the varnames list in the `$fixedeffect_names` argument:
+To control for group fixed-effects, we add their names to the varnames list in the `$fixedeffect_names` argument. Note that we need to first define a group-by-time identifier:
 
 ```{r echo=T, eval=T, message=FALSE}
-varnames$fixedeffect_names = "group_id"
+simulated_data[, group_year := .GRP, by = c("group_id", "time_id")]
+varnames$fixedeffect_names = "group_year"
 
 reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
 head(reg)
+
+varnames$fixedeffect_names = NULL
 ```
 
