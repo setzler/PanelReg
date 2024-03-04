@@ -32,6 +32,11 @@ test_that("Estimate 'exogenous' case", {
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)  
     expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 2e-2) # should pass
 
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.0)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)  
+    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 2e-2) # should pass
+
 })
 
 
@@ -66,6 +71,11 @@ test_that("Estimate 'iid' case", {
     
     # estimate the model under the AR1 assumption, Panel IV method
     AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
+    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 3e-2) # should pass
+
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.0)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
     expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 3e-2) # should pass
 
@@ -106,6 +116,11 @@ test_that("Estimate 'FE' case", {
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
     expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
 
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.0)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
+    expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
+
 })
 
 test_that("Estimate 'MA1' case", {
@@ -139,6 +154,11 @@ test_that("Estimate 'MA1' case", {
     
     # estimate the model under the AR1 assumption, Panel IV method
     AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
+    expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
+
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.0)
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options) 
     expect_false(all(abs(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate - c(0.5, -0.2)) < 5e-2)) # should fail
 
@@ -181,9 +201,9 @@ test_that("Estimate 'AR1' case", {
     est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
     expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
 
-    # estimate the model under the AR1 assumption, GMM method
-    #AR1_options = list(AR1_method = "GMM", AR1_IV_outcome = TRUE, AR1_IV_lags = 2)
-    #est_AR1_GMM = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
-    #expect_equal(est_AR1_GMM[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
+    # estimate the model under the AR1 assumption, Panel IV method
+    AR1_options = list(AR1_method = "PanelIV", AR1_IV_outcome = TRUE, AR1_persistence = 0.5)
+    est_AR1_PanelIV = PanelReg(panel_data = copy(simulated_data), panel_model = "AR1", varnames = varnames, AR1_options = AR1_options)
+    expect_equal(est_AR1_PanelIV[Variable %in% c("endog_var1", "endog_var2")]$Estimate, c(0.5, -0.2), tolerance = 1e-2) # should pass
     
 })

@@ -1,28 +1,18 @@
 #' Internal function to estimate AR(1) model using Panel IV method. There are two cases depending on whether or not the AR(1) persistence parameter is known.
 #' @noRd
-PR.est.AR1.PanelIV <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
+PR.est.AR1.PanelIV <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
     if (is.null(AR1_persistence)) {
-        return(PR.est.AR1.PanelIV.unknown_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, AR1_IV_outcome = AR1_IV_outcome))
+        return(PR.est.AR1.PanelIV.unknown_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_outcome = AR1_IV_outcome))
     } else {
-        return(PR.est.AR1.PanelIV.known_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, AR1_persistence = AR1_persistence, AR1_IV_outcome = AR1_IV_outcome))
+        return(PR.est.AR1.PanelIV.known_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_persistence = AR1_persistence))
     }
 }
 
 #' Internal function to estimate AR(1) model. The formula is y_{i,t} = rho*y_{i,t-1} + X_{i,t}'beta - X_{i,t-1}'(beta*rho) + u_{i,t}, where X_{i,t} depends on u_{i,t}. The instruments are X_{i,t-1}.
 #' @noRd
-PR.est.AR1.PanelIV.unknown_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, AR1_IV_outcome = TRUE) {
+PR.est.AR1.PanelIV.unknown_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_outcome = TRUE) {
     # build the formula
-    the_formula = sprintf("%s ~ %s + %s | %s ~ %s", outcome_name, paste0(outcome_name, "_lag"), paste(paste0(endogenous_names, "_lag"), collapse = " + "), paste(endogenous_names, collapse = " + "), paste(paste0(endogenous_names, "_lag2"), collapse = " + "))
-    if (AR1_IV_outcome) {
-        the_formula = sprintf("%s ~ %s + %s | %s ~ %s + %s", outcome_name, paste0(outcome_name, "_lag"), paste(paste0(endogenous_names, "_lag"), collapse = " + "), paste(endogenous_names, collapse = " + "), paste(paste0(endogenous_names, "_lag2"), collapse = " + "), paste0(outcome_name, "_lag2"))
-    }
-    # if exogenous vars are present, add them to the formula
-    if (length(covariate_names) > 0) {
-        the_formula = sprintf("%s ~ %s + %s + %s + %s | %s ~ %s", outcome_name, paste0(outcome_name, "_lag"), paste(paste0(endogenous_names, "_lag"), collapse = " + "), paste(covariate_names, collapse = " + "), paste(paste0(covariate_names, "_lag"), collapse = " + "), paste(endogenous_names, collapse = " + "), paste(paste0(endogenous_names, "_lag2"), collapse = " + "))
-        if (AR1_IV_outcome) {
-            the_formula = sprintf("%s ~ %s + %s + %s + %s | %s ~ %s + %s + %s", outcome_name, paste0(outcome_name, "_lag"), paste(paste0(endogenous_names, "_lag"), collapse = " + "), paste(covariate_names, collapse = " + "), paste(paste0(covariate_names, "_lag"), collapse = " + "), paste(endogenous_names, collapse = " + "), paste(paste0(endogenous_names, "_lag2"), collapse = " + "), paste0(outcome_name, "_lag2"), paste(paste0(covariate_names, "_lag2"), collapse = " + "))
-        }
-    }
+    the_formula = PR.formula.AR1.PanelIV.unknown_persistence(outcome_name, endogenous_names, covariate_names, fixedeffect_names, AR1_IV_outcome)
     # estimate the model
     est = feols(as.formula(the_formula), data = panel_data)
     # return the estimated second stage
@@ -35,7 +25,7 @@ PR.est.AR1.PanelIV.unknown_persistence <- function(panel_data, outcome_name, end
 
 #' Internal function to estimate AR(1) model. It takes the AR(1) persistence parameter as given, constructs the quasi-differenced outcome and endogenous variables, then uses an IV regression to estimate the effect beta. The formula is (y_{i,t} - rho*y_{i,t-1}) = (X_{i,t} - rho*X_{i,t-1})'beta + u_{i,t}, where X_{i,t} depends on u_{i,t}. The instruments are X_{i,t-1}.
 #' @noRd
-PR.est.AR1.PanelIV.known_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, AR1_persistence, AR1_IV_outcome = TRUE) {
+PR.est.AR1.PanelIV.known_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_persistence, AR1_IV_outcome = TRUE) {
     # define quasi-differenced outcome and endogenous variables
     panel_data[, (paste0(outcome_name, "_quasidiff")) := get(outcome_name) - AR1_persistence  * get(paste0(outcome_name, "_lag"))]
     for (ii in seq_len(length(endogenous_names))) {
@@ -47,17 +37,7 @@ PR.est.AR1.PanelIV.known_persistence <- function(panel_data, outcome_name, endog
         }
     }
     # build the formula
-    the_formula = sprintf("%s ~ 1 | %s ~ %s", paste0(outcome_name, "_quasidiff"), paste0(paste0(endogenous_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_lag"), collapse = " + "))
-    if (AR1_IV_outcome){
-        the_formula = sprintf("%s ~ 1 | %s ~ %s + %s", paste0(outcome_name, "_quasidiff"), paste0(paste0(endogenous_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_lag"), collapse = " + "), paste0(outcome_name, "_lag"))
-    }
-    # if exogenous vars are present, add them to the formula
-    if (length(covariate_names) > 0) {
-        the_formula = sprintf("%s ~ %s | %s ~ %s", paste0(outcome_name, "_quasidiff"), paste0(paste0(covariate_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_lag"), collapse = " + "))
-        if (AR1_IV_outcome) {
-            the_formula = sprintf("%s ~ %s | %s ~ %s + %s", paste0(outcome_name, "_quasidiff"), paste0(paste0(covariate_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_quasidiff"), collapse = " + "), paste0(paste0(endogenous_names, "_lag"), collapse = " + "), paste0(outcome_name, "_lag"))
-        }
-    }
+    the_formula = PR.formula.AR1.PanelIV.known_persistence(outcome_name, endogenous_names, covariate_names, fixedeffect_names, AR1_IV_outcome)
     # estimate the model
     est = feols(as.formula(the_formula), data = panel_data)
     # return the estimated second stage
@@ -149,7 +129,7 @@ PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate
             iter = iter + 1
         }
         # check if the solution is converged
-        if(sol$value < best_val) {
+        if (sol$value < best_val) {
             best_val = sol$value
             best_est = sol$par
         }
@@ -161,7 +141,7 @@ PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate
         # set up zeros
         startvals = rep(0, n_endogenous) # endogenous variables
         startvals = c(startvals, 0.0) # intercept
-        if(n_exogenous > 0) {
+        if (n_exogenous > 0) {
             startvals = c(startvals, rep(0, n_exogenous))
         }
         # solution if AR1_persistence is zero
@@ -211,7 +191,7 @@ PR.est.AR1.GMM_moments <- function(panel_data, outcome_name, endogenous_names, c
         panel_data[, paste0(endogenous_names[ii], "_quasidiff") := get(endogenous_names[ii]) - AR1_persistence_guess * get(paste0(endogenous_names[ii], "_lag"))]
     }
     # exogenous variables
-    if(length(covariate_names) > 0) {
+    if (length(covariate_names) > 0) {
         for (ii in seq_len(length(covariate_names))) {
             panel_data[, paste0(covariate_names[ii], "_quasidiff") := get(covariate_names[ii]) - AR1_persistence_guess * get(paste0(covariate_names[ii], "_lag"))]
         }
@@ -222,7 +202,7 @@ PR.est.AR1.GMM_moments <- function(panel_data, outcome_name, endogenous_names, c
     # quasi-diff y minus quasi-diff X'beta minus quasi-diff intercept
     panel_data$u_it = panel_data[, get(paste0(outcome_name, "_quasidiff"))] - as.matrix(panel_data[, .SD, .SDcols = (paste0(endogenous_names, "_quasidiff"))]) %*% beta_guess  - delta_guess[1] * (1 - AR1_persistence_guess)
     # subtract the quasi-diff exogenous variables
-    if(length(covariate_names) > 0) {
+    if (length(covariate_names) > 0) {
         panel_data$u_it = panel_data$u_it - as.matrix(panel_data[, .SD, .SDcols = (paste0(covariate_names, "_quasidiff"))]) %*% delta_guess[2:(length(delta_guess))]
     }
     #########################

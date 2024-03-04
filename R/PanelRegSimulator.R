@@ -52,7 +52,7 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
         paneldata[, group_draw := runif(1), unit_id]
         paneldata[, group_id := ceiling(group_draw * 10)] # randomly assign 10 groups
         paneldata[, group_draw := NULL]
-        paneldata[, group_FE := rnorm(1, sd = sqrt(true_FE_var)), by = c("group_id")]
+        paneldata[, group_FE := rnorm(1, sd = sqrt(true_FE_var)), by = c("group_id", "time_id")]
     }
 
     # make sure the data is sorted
@@ -111,7 +111,7 @@ PanelRegSim <- function(seed = 1234, sample_size = 1e4, min_year = 2000, max_yea
 
     # construct the endogenous variables
     for (ii in 1:num_endog_vars) {
-        paneldata[, paste0("endog_var", ii) := 3 + endog_weights[ii] * eps_it + (1 - endog_weights[ii]) * rnorm(n = .N, sd = 1) + get(paste0("random_walk", ii))]
+        paneldata[, paste0("endog_var", ii) := ii + endog_weights[ii] * eps_it + (1 - endog_weights[ii]) * rnorm(n = .N, sd = 1) + get(paste0("random_walk", ii))]
     }
 
     # define the basics of the dependent variable

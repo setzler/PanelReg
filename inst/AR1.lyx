@@ -258,6 +258,10 @@ The only source of endogeneity in this regression is that
 \begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2}\right)$
 \end_inset
 
+ or 
+\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2},w_{it-2}\right)$
+\end_inset
+
 .
 \end_layout
 
@@ -347,10 +351,6 @@ Simulation Exercise
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
