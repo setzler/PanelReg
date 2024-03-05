@@ -341,7 +341,7 @@ follows:</p>
 <span><span class="co">#&gt;        &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1: endog_var1  0.591082 0.000669  884.1034      0</span></span>
 <span><span class="co">#&gt; 2: endog_var2 -0.156579 0.000664 -235.8358      0</span></span></code></pre></div>
-<p>The package provides two strategies for estimating the AR(1) model:
+<p>The package provides three strategies for estimating the AR(1) model:
 Panel IV and GMM.</p>
 <p><strong>Panel IV:</strong> The error structure implies that, <span class="math display">\[ y_{it} = \rho y_{it-1} + x_{it}'\beta
 +  x_{it-1}'(-\beta\rho) +  w_{it}'\gamma +
@@ -405,9 +405,9 @@ outcomes as IVs:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Variable  Estimate</span></span>
 <span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1:      endog_var1  0.498678</span></span>
-<span><span class="co">#&gt; 2:      endog_var2 -0.203398</span></span>
-<span><span class="co">#&gt; 3: AR1_persistence  0.497962</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:      endog_var1  0.499348</span></span>
+<span><span class="co">#&gt; 2:      endog_var2 -0.201949</span></span>
+<span><span class="co">#&gt; 3: AR1_persistence  0.499692</span></span></code></pre></div>
 <p>Note that an estimate of the AR(1) persistence parameter, <span class="math inline">\(\rho\)</span>, is returned by both “AR1”
 implementations.</p>
 </div>
