@@ -152,6 +152,63 @@ vspace{-1cm}
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Paragraph
+Panel IV Approach:
+\end_layout
+
+\begin_layout Standard
+One approach is to rearrange Equation (4) as a panel regression:
+\begin_inset Formula 
+\begin{align}
+y_{it} & =y_{it-1}(\rho)+x_{it}'(\beta)+x_{it-1}'(-\rho\beta)+w_{it}'(\delta)+w_{it-1}'(-\rho\delta)+\eta_{it}
+\end{align}
+
+\end_inset
+
+The only source of endogeneity in this regression is that 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+ depends on 
+\begin_inset Formula $\eta_{it}$
+\end_inset
+
+.
+ This implies that 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is identified by a regression of 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ on 
+\begin_inset Formula $x_{it}$
+\end_inset
+
+, controlling for 
+\begin_inset Formula $\left(y_{it-1},x_{it-1},w_{it},w_{it-1}\right)$
+\end_inset
+
+, and instrumented by 
+\begin_inset Formula $z_{it}=\left(x_{it-2}\right)$
+\end_inset
+
+ or 
+\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2}\right)$
+\end_inset
+
+ or 
+\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2},w_{it-2}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
 GMM Approach: 
 \end_layout
 
@@ -205,61 +262,9 @@ where
 \begin_inset Formula $z_{it}$
 \end_inset
 
- needs to be one more than the number of enodgenous variables in 
+ must include at least one more than the number of enodgenous variables
+ in 
 \begin_inset Formula $x_{it}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Paragraph
-Panel IV Approach:
-\end_layout
-
-\begin_layout Standard
-An alternative approach is to rearrange Equation (4) as a panel regression:
-\begin_inset Formula 
-\begin{align}
-y_{it} & =y_{it-1}(\rho)+x_{it}'(\beta)+x_{it-1}'(-\rho\beta)+w_{it}'(\delta)+w_{it-1}'(-\rho\delta)+\eta_{it}
-\end{align}
-
-\end_inset
-
-The only source of endogeneity in this regression is that 
-\begin_inset Formula $x_{it}$
-\end_inset
-
- depends on 
-\begin_inset Formula $\eta_{it}$
-\end_inset
-
-.
- This implies that 
-\begin_inset Formula $\beta$
-\end_inset
-
- is identified by a regression of 
-\begin_inset Formula $y_{it}$
-\end_inset
-
- on 
-\begin_inset Formula $x_{it}$
-\end_inset
-
-, controlling for 
-\begin_inset Formula $\left(y_{it-1},x_{it-1},w_{it},w_{it-1}\right)$
-\end_inset
-
-, and instrumented by 
-\begin_inset Formula $z_{it}=\left(x_{it-2}\right)$
-\end_inset
-
- or 
-\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2}\right)$
-\end_inset
-
- or 
-\begin_inset Formula $z_{it}=\left(x_{it-2},y_{it-2},w_{it-2}\right)$
 \end_inset
 
 .

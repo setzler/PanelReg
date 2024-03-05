@@ -232,7 +232,7 @@ head(reg)
 
 
 
-The package provides two strategies for estimating the AR(1) model: Panel IV and GMM.
+The package provides three strategies for estimating the AR(1) model: Panel IV and GMM.
 
 **Panel IV:** The error structure implies that, $$ y_{it} = \rho y_{it-1} + x_{it}'\beta +  x_{it-1}'(-\beta\rho) +  w_{it}'\gamma + w_{it-1}'(-\gamma\rho) + \eta_{it}$$ Since only $x_{it}$ depends on the unobservable $\eta_{it}$, and lagged values of $x$ are independent of contemporaneous $\eta$, it follows that $\beta$ can be estimated by a regression of $y_{it}$ on $x_{it}$, with instrument $x_{it-2}$, controlling for $(y_{it-1}, x_{it-1}, w_{it}, w_{it-1})$. Another available instrument is $y_{it-2}$, so there is an option to use the lagged outcome as an IV as well. 
 
