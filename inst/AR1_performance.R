@@ -5,7 +5,7 @@ library(testthat)
 library(parallel)
 document()
 
-results_holder = data.table(expand.grid(seedval = 1:10, N = c(1e4, 2e4, 5e4, 10e4), Method = c("PanelIV", "PanelIVy", "GMM_lag1y", "GMM_lag2", "GMM_lag2y")))
+results_holder = data.table(expand.grid(seedval = 1:10, N = c(1e3, 2e3, 5e3, 1e4, 2e4), Method = c("PanelIV", "PanelIVy", "GMM_lag1y", "GMM_lag2", "GMM_lag2y")))
 
 varnames = list(
   id_name = "unit_id",
@@ -54,18 +54,6 @@ eval_AR1 <- function(ii) {
 # run the simulation
 res = mclapply(1:nrow(results_holder), eval_AR1, mc.cores = 7)
 res = rbindlist(res)
-
-# prepare the results
-options(scipen = 999)
-res[, Size := N / 1e3]
-res[, Size := factor(Size, levels = res[, sort(unique(Size))])]
-res[, Approach := ""]
-res[Method == "PanelIV", Approach := "Panel IV: X only"]
-res[Method == "PanelIVy", Approach := "Panel IV: X and Y"]
-res[Method == "GMM_lag1", Approach := "GMM, IV:\nLag 1 of X"]
-res[Method == "GMM_lag1y", Approach := "GMM, IV:\nLag 1 of X & Y"]
-res[Method == "GMM_lag2", Approach := "GMM, IV:\nLag 1-2 of X"]
-res[Method == "GMM_lag2y", Approach := "GMM, IV:\nLag 1-2 of X & Y"]
 write.csv(res, "inst/AR1_simulation_results.csv", row.names = FALSE)
 
 
@@ -76,18 +64,33 @@ library(data.table)
 library(ggplot2)
 library(latex2exp)
 res = setDT(read.csv("inst/AR1_simulation_results.csv"))
-res[, Size := factor(Size)]
+
+# prepare the results
+options(scipen = 999)
+res[, Size := N / 1e3]
+res[, Size := factor(Size, levels = res[, sort(unique(Size))])]
+res[, Approach := ""]
+res[Method == "PanelIV", Approach := "Panel IV: X only"]
+res[Method == "PanelIVy", Approach := "Panel IV: X and Y"]
+res[Method == "GMM_lag1", Approach := "GMM, IV: Lag 1 of X"]
+res[Method == "GMM_lag1y", Approach := "GMM, IV: Lag 1 of X & Y"]
+res[Method == "GMM_lag2", Approach := "GMM, IV: Lag 1-2 of X"]
+res[Method == "GMM_lag2y", Approach := "GMM, IV: Lag 1-2 of X & Y"]
 
 gg = ggplot(res, aes(x = Size, y = Estimate1, color = Approach)) +
   geom_boxplot(width = .3) + geom_hline(yintercept = 0.5) +
   labs(title = TeX("AR1 Simulation Results: $beta_1$"), x = "Sample Size (Thousands)", y = "Estimate") +
-  theme(legend.position = "bottom") + theme_bw() +
-  guides(color = guide_legend(ncol = 2)) + ylim(-0.3, 0.7)
+  theme_bw() +
+  guides(color = guide_legend(ncol = 2)) +
+  theme(legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(-0.35,0.9,by=0.1), limits = c(-0.35,0.9))
 ggsave(filename = "inst/AR1_simulation_results1.png", gg, width = 7, height = 5)
 
 gg = ggplot(res, aes(x = Size, y = Estimate2, color = Approach)) +
   geom_boxplot(width = .3) + geom_hline(yintercept = -0.2) +
   labs(title = TeX("AR1 Simulation Results: $beta_2$"), x = "Sample Size (Thousands)", y = "Estimate") +
-  theme(legend.position = "bottom") + theme_bw() +
-  guides(color = guide_legend(ncol = 2)) + ylim(-0.3, 0.7)
+  theme_bw() +
+  guides(color = guide_legend(ncol = 2)) +
+  theme(legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(-0.5,0,by=0.05), limits = c(-0.5,0))
 ggsave(filename = "inst/AR1_simulation_results2.png", gg, width = 7, height = 5)
