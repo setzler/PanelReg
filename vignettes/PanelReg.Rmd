@@ -110,7 +110,7 @@ The error term is given by $\epsilon_{it} = \bar\epsilon_i, \forall t$. The data
 
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "FE", seed = 123, sample_size = 10000, 
+simulated_data = PanelRegSim(panel_model = "FE", seed = 123, sample_size = 30000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
 head(simulated_data)
 ```
@@ -145,7 +145,7 @@ head(reg)
 The error term is given by $\epsilon_{it} = \eta_{it}$. The model can be simulated as follows:
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "iid", seed = 123, sample_size = 10000, 
+simulated_data = PanelRegSim(panel_model = "iid", seed = 123, sample_size = 30000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
 head(simulated_data)
 ```
@@ -175,7 +175,7 @@ head(reg)
 The error term is given by $\epsilon_{it} = \eta_{it} + \theta \eta_{it-1}$. The data can be simulated as follows:
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 10000, 
+simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 30000, 
                              min_year = 2003, max_year = 2006, true_beta = c(0.5, -0.2))
 head(simulated_data)
 ```
@@ -283,7 +283,7 @@ Note that an estimate of the AR(1) persistence parameter, $\rho$, is returned by
 Consider again the "MA1" model. We can add covariates to the simulated model by setting the `true_gamma` parameter:
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 20000, 
+simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 50000, 
                              noise_sd = 0, min_year = 2003, max_year = 2009, 
                              true_beta = c(0.5, -0.2), true_gamma = c(1, -1))
 
@@ -294,7 +294,7 @@ head(simulated_data)
 If we do not control for the covariates, the estimation becomes biased:
 
 ```{r echo=T, eval=T, message=FALSE}
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
 head(reg)
 ```
 
@@ -304,7 +304,7 @@ To control linearly for covariates, we add their names to the varnames list in t
 ```{r echo=T, eval=T, message=FALSE}
 varnames$covariate_names = c("co_var1")
 
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
 head(reg)
 
 varnames$covariate_names = NULL
@@ -316,7 +316,7 @@ varnames$covariate_names = NULL
 Consider again the "iid" model. We can assign units to groups in the simulated model by setting the `true_FE_var` parameter. When the variance is positive, each unit ID is assigned to a group, and a group-by-time shock is drawn.
 
 ```{r echo=T, eval=T, message=FALSE}
-simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 20000, 
+simulated_data = PanelRegSim(panel_model = "MA1", seed = 123, sample_size = 50000, 
                              noise_sd = 0, min_year = 2003, max_year = 2008, 
                              true_beta = c(0.5, -0.2), true_FE_var = 5)
 head(simulated_data)
@@ -325,7 +325,7 @@ head(simulated_data)
 If we do not control for the group identifiers, the estimation becomes biased by group fixed-effects:
 
 ```{r echo=T, eval=T, message=FALSE}
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
 head(reg)
 ```
 
@@ -335,7 +335,7 @@ To control for group fixed-effects, we add their names to the varnames list in t
 simulated_data[, group_year := .GRP, by = c("group_id", "time_id")]
 varnames$fixedeffect_names = "group_year"
 
-reg = PanelReg(panel_data = copy(simulated_data), panel_model = "MA1", varnames = varnames)
+reg = PanelReg(panel_data = simulated_data, panel_model = "MA1", varnames = varnames)
 head(reg)
 
 varnames$fixedeffect_names = NULL
