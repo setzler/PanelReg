@@ -268,6 +268,7 @@ where
 \end_inset
 
 .
+ See the Appendix for further implementation details.
 \end_layout
 
 \begin_layout Subsection*
@@ -362,6 +363,111 @@ Simulation Exercise
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Appendix: GMM Implementation Algorithm
+\end_layout
+
+\begin_layout Standard
+Denote 
+\begin_inset Formula $g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\equiv\left(w_{it},z_{it}\right)\;\hat{\eta}_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Set the weighting matrix to 
+\begin_inset Formula $W=I$
+\end_inset
+
+.
+ Solve 
+\begin_inset Formula $\left(\beta,\delta\right)=\min_{\hat{\beta},\hat{\delta}}\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},0\right)\right]'W\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},0\right)\right]$
+\end_inset
+
+.
+ This gives an initial solution given 
+\begin_inset Formula $\rho=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Solve 
+\begin_inset Formula $\left(\beta,\delta,\rho\right)=\min_{\hat{\beta},\hat{\delta},\hat{\rho}}\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\right]'W\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\right]$
+\end_inset
+
+, taking the most recent solution as the initialization point.
+\end_layout
+
+\begin_layout Enumerate
+Set the weighting matrix to 
+\begin_inset Formula $W=\hat{\Omega}^{-1}$
+\end_inset
+
+, where 
+\begin_inset Formula $\hat{\Omega}=\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)'\right]$
+\end_inset
+
+, evaluated at the most recent solution.
+\end_layout
+
+\begin_layout Enumerate
+Repeats steps 2 then 3, until numerical convergence is achieved.
+ The solutions are 
+\begin_inset Formula $\left(\beta,\delta,\rho\right),\Omega$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Compute 
+\begin_inset Formula $G\equiv\mathbb{E}\left[\nabla g_{it}\left(\beta,\delta,\rho\right)\right]$
+\end_inset
+
+, where 
+\begin_inset Formula $G$
+\end_inset
+
+ is a 
+\begin_inset Formula $(|w|+|z|)\times(|\beta|+|\delta|+|\rho|)$
+\end_inset
+
+ dimensional matrix with elements,
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial}{\partial\beta^{(j)}}g_{it} & =-\left(w_{it},z_{it}\right)\;\left(x_{it}^{(j)}-\rho x_{it-1}^{(j)}\right)\\
+\frac{\partial}{\partial\rho}g_{it} & =-y_{it-1}+x_{it-1}'\hat{\beta}+w_{it-1}'\hat{\delta}\\
+\frac{\partial}{\partial\delta^{(1)}}g_{it} & =-\left(w_{it},z_{it}\right)\;\left(1-\rho\right)\\
+\frac{\partial}{\partial\delta^{(j)}}g_{it} & =-\left(w_{it},z_{it}\right)\;\left(w_{it}^{(j)}-\rho w_{it-1}^{(j)}\right),\;j>1
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Compute 
+\begin_inset Formula $\text{SE}\left(\beta,\delta,\rho\right)=\text{diag}\left(\text{Var}\left(\beta,\delta,\rho\right)\right)^{1/2}$
+\end_inset
+
+, where 
+\begin_inset Formula $\text{Var}\left(\beta,\delta,\rho\right)=\left(G'\Omega^{-1}G\right)^{-1}/(NT)$
+\end_inset
+
+.
 \end_layout
 
 \end_body
