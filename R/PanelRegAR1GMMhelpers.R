@@ -13,10 +13,6 @@ PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate
 #' Internal function to estimate AR(1) model. It uses GMM to fit the IV moments. For a guess of beta and the AR1_persistence, it computes the unobserved shock using quasi-differences. u_{i,t} = (y_{i,t} - rho*y_{i,t-1}) - (X_{i,t} - rho*X_{i,t-1})'beta. Then it fits mean(u_{i,t} * X_{i,t-1}) = 0 using BFGS.
 #' @noRd
 PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
-    # not implemented yet
-    if (!is.null(fixedeffect_names)) {
-        stop("Stop: Fixed effects not implemented yet for AR(1) GMM estimator.")
-    }
     # number of endogenous variables
     n_endogenous = length(endogenous_names)
     n_exogenous = length(covariate_names)
@@ -34,12 +30,12 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
         }
         delta_guess = x[param_index:(param_index + n_exogenous)]
         # compute the IV moments
-        GMM_obj = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = weighting_matrix, get_variance = FALSE)
+        GMM_obj = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = weighting_matrix, get_variance = FALSE)
         # compute the objective value
         return(GMM_obj)
     }  
     # get an initial weighting matrix
-    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = rep(0, n_endogenous), delta_guess = rep(0, n_exogenous + 1), AR1_persistence_guess = 0.0, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
+    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = rep(0, n_endogenous), delta_guess = rep(0, n_exogenous + 1), AR1_persistence_guess = 0.0, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
     weighting_matrix = diag(diag(var_matrix) * 0 + 1) # identity matrix 
     # solution if AR1_persistence is zero
     startvals = rep(0, n_endogenous + 1 + n_exogenous) # endogenous variables
@@ -60,7 +56,7 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
     param_index = param_index + 1
     delta_guess = x[param_index:(param_index + n_exogenous)]
     # get an updated weighting matrix
-    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
+    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
     weighting_matrix = solve(var_matrix)
     # try up to 10 times to get convergence, with random starts
     iter = 0
@@ -86,7 +82,7 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
         param_index = param_index + 1
         delta_guess = x[param_index:(param_index + n_exogenous)]
         # get an updated weighting matrix
-        var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
+        var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
         weighting_matrix = solve(var_matrix)
         # update the best solution
         if (sol$value < best_val) {
@@ -114,7 +110,7 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
     # return the best estimates
     best_estimates = data.table(Variable = c(endogenous_names, "AR1_persistence"), Estimate = round(c(beta_guess, AR1_persistence_guess), 6))
     # update the var matrix
-    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
+    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
     # prepare standard errors
     SEs = PR.est.AR1.GMM.SE(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, var_matrix = var_matrix) 
     best_estimates = merge(best_estimates, SEs, by = "Variable")
@@ -128,10 +124,6 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
 #' Internal function to estimate AR(1) model. It uses GMM to fit the IV moments. For a guess of beta and the AR1_persistence, it computes the unobserved shock using quasi-differences. u_{i,t} = (y_{i,t} - rho*y_{i,t-1}) - (X_{i,t} - rho*X_{i,t-1})'beta. Then it fits mean(u_{i,t} * X_{i,t-1}) = 0 using BFGS.
 #' @noRd
 PR.est.AR1.GMM.known_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence) {
-    # not implemented yet
-    if (!is.null(fixedeffect_names)) {
-        stop("Stop: Fixed effects not implemented yet for AR(1) GMM estimator.")
-    }
     # number of endogenous variables
     n_endogenous = length(endogenous_names)
     n_exogenous = length(covariate_names)
@@ -149,7 +141,7 @@ PR.est.AR1.GMM.known_persistence <- function(panel_data, outcome_name, endogenou
         }
         delta_guess = x[param_index:(param_index + n_exogenous)]
         # compute the IV moments
-        GMM_obj = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = weighting_matrix, get_variance = FALSE)
+        GMM_obj = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = weighting_matrix, get_variance = FALSE)
         # compute the objective value
         return(GMM_obj)
     }
@@ -201,7 +193,7 @@ PR.est.AR1.GMM.known_persistence <- function(panel_data, outcome_name, endogenou
 
 #' Internal function to estimate AR(1) model. It computes the IV moments for a guess of beta and the AR1_persistence. The IV moments are mean(u_{i,t} * X_{i,t-1}) for each endogenous variable and its lag.
 #' @noRd
-PR.est.AR1.GMM_moments <- function(panel_data, outcome_name, endogenous_names, covariate_names, beta_guess, delta_guess, AR1_persistence_guess, AR1_IV_lags = 2, AR1_IV_outcome = TRUE, weighting_matrix = NULL, get_variance = FALSE) {
+PR.est.AR1.GMM_moments <- function(panel_data, outcome_name, endogenous_names, covariate_names, fixedeffect_names, beta_guess, delta_guess, AR1_persistence_guess, AR1_IV_lags = 2, AR1_IV_outcome = TRUE, weighting_matrix = NULL, get_variance = FALSE) {
     #########################
     # quasi-differences
     #########################
@@ -225,6 +217,9 @@ PR.est.AR1.GMM_moments <- function(panel_data, outcome_name, endogenous_names, c
     # subtract the quasi-diff exogenous variables
     if (length(covariate_names) > 0) {
         panel_data$u_it = panel_data$u_it - as.matrix(panel_data[, .SD, .SDcols = (paste0(covariate_names, "_quasidiff"))]) %*% delta_guess[2:(length(delta_guess))]
+    }
+    if (length(fixedeffect_names) > 0) {
+        panel_data$u_it = resid(feols(as.formula(sprintf("u_it ~ 1 | %s", fixedeffect_names)), data = panel_data))
     }
     #########################
     # compute the IV moments
