@@ -3,16 +3,19 @@
 #' @noRd
 PR.est.AR1.GMM <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_outcome = TRUE, AR1_IV_lags = 1, AR1_persistence = NULL) {
     if (is.null(AR1_persistence)) {
-        return(PR.est.AR1.GMM.unknown_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome))
+        initial_guess = PR.est.AR1.GMM.unknown_persistence.init_search(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome)
+        print(sprintf("Best initial guess of beta parameters: %s. Best initial guess of AR1 persistence: %s.", paste0(round(initial_guess$beta_params, 3), collapse = ", "), round(initial_guess$AR1_persistence, 3))) 
+        return(PR.est.AR1.GMM.unknown_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, beta_guess = initial_guess$beta_params, AR1_persistence_guess = initial_guess$AR1_persistence, delta_guess = c(0, initial_guess$delta_params)))
     } else {
         return(PR.est.AR1.GMM.known_persistence(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, AR1_persistence = AR1_persistence))
     }
 }
 
 
+
 #' Internal function to estimate AR(1) model. It uses GMM to fit the IV moments. For a guess of beta and the AR1_persistence, it computes the unobserved shock using quasi-differences. u_{i,t} = (y_{i,t} - rho*y_{i,t-1}) - (X_{i,t} - rho*X_{i,t-1})'beta. Then it fits mean(u_{i,t} * X_{i,t-1}) = 0 using BFGS.
 #' @noRd
-PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL) {
+PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL, beta_guess, AR1_persistence_guess, delta_guess) {
     # number of endogenous variables
     n_endogenous = length(endogenous_names)
     n_exogenous = length(covariate_names)
@@ -33,40 +36,22 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
         GMM_obj = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = weighting_matrix, get_variance = FALSE)
         # compute the objective value
         return(GMM_obj)
-    }  
+    }
     # get an initial weighting matrix
-    var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = rep(0, n_endogenous), delta_guess = rep(0, n_exogenous + 1), AR1_persistence_guess = 0.0, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
-    weighting_matrix = diag(diag(var_matrix) * 0 + 1) # identity matrix 
-    # solution if AR1_persistence is zero
-    startvals = rep(0, n_endogenous + 1 + n_exogenous) # endogenous variables
-    sol = optim(startvals, GMM_objective, AR1_persistence = 0.0, weighting_matrix = weighting_matrix, method = "Nelder-Mead")
-    startvals = sol$par
-    startvals = c(startvals[1:n_endogenous], 0.0, startvals[(n_endogenous + 1):length(startvals)])
-    # initial solution with free AR1_persistence parameter
-    sol = optim(startvals, GMM_objective, AR1_persistence = NULL, weighting_matrix = weighting_matrix, method = "Nelder-Mead")
-    startvals = sol$par
-    best_est = sol$par
-    best_val = sol$value 
-    # unpack the parameters
-    x = startvals
-    param_index = 1
-    beta_guess = x[1:n_endogenous]
-    param_index = param_index + n_endogenous
-    AR1_persistence_guess = x[(n_endogenous + 1)]
-    param_index = param_index + 1
-    delta_guess = x[param_index:(param_index + n_exogenous)]
-    # get an updated weighting matrix
     var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
     weighting_matrix = solve(var_matrix)
     # try up to 10 times to get convergence, with random starts
+    startvals = c(beta_guess, AR1_persistence_guess, delta_guess)
     iter = 0
     convergence = 1
     lagged_convergence = 1
+    best_val = GMM_objective(startvals, AR1_persistence = NULL, weighting_matrix = weighting_matrix)
+    best_est = startvals
     while ((convergence != 0 || lagged_convergence != 0) && iter < 10) {
         # randomize the start values
         if (iter > 0) {
             startvals = startvals * runif(length(startvals), 0.75, 1.25)
-        } 
+        }
         # solve using BFGS, switch to Nelder-Mead if BFGS fails to converge
         if (iter < 5) {
             sol = optim(startvals, GMM_objective, AR1_persistence = NULL, weighting_matrix = weighting_matrix, method = "BFGS")
@@ -81,38 +66,39 @@ PR.est.AR1.GMM.unknown_persistence <- function(panel_data, outcome_name, endogen
         AR1_persistence_guess = x[(n_endogenous + 1)]
         param_index = param_index + 1
         delta_guess = x[param_index:(param_index + n_exogenous)]
-        # get an updated weighting matrix
-        var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
-        weighting_matrix = solve(var_matrix)
+
         # update the best solution
         if (sol$value < best_val) {
             best_val = sol$value
             best_est = sol$par
+            # get an updated weighting matrix
+            var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
+            weighting_matrix = solve(var_matrix)
         }
         if (iter > 0) {
             lagged_convergence = convergence
-        } 
+        }
         convergence = sol$convergence
         iter = iter + 1
     }
     # check if the solution is converged
     if (convergence != 0) {
         stop("GMM did not converge")
-    } 
+    }
     # unpack the solution
     x = best_est
     param_index = 1
     beta_guess = x[1:n_endogenous]
-    param_index = param_index + n_endogenous 
+    param_index = param_index + n_endogenous
     AR1_persistence_guess = x[(n_endogenous + 1)]
-    param_index = param_index + 1 
+    param_index = param_index + 1
     delta_guess = x[param_index:(param_index + n_exogenous)]
     # return the best estimates
     best_estimates = data.table(Variable = c(endogenous_names, "AR1_persistence"), Estimate = round(c(beta_guess, AR1_persistence_guess), 6))
     # update the var matrix
     var_matrix = PR.est.AR1.GMM_moments(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, weighting_matrix = NULL, get_variance = TRUE)
     # prepare standard errors
-    SEs = PR.est.AR1.GMM.SE(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, var_matrix = var_matrix) 
+    SEs = PR.est.AR1.GMM.SE(panel_data = panel_data, outcome_name = outcome_name, endogenous_names = endogenous_names, covariate_names = covariate_names, fixedeffect_names = fixedeffect_names, AR1_IV_lags = AR1_IV_lags, AR1_IV_outcome = AR1_IV_outcome, beta_guess = beta_guess, delta_guess = delta_guess, AR1_persistence_guess = AR1_persistence_guess, var_matrix = var_matrix)
     best_estimates = merge(best_estimates, SEs, by = "Variable")
     best_estimates[, tvalue := Estimate / SE]
     best_estimates[, pvalue := 2 * (1 - pt(abs(tvalue), N - 1))]
@@ -306,10 +292,10 @@ PR.est.AR1.GMM.SE <- function(panel_data, outcome_name, endogenous_names, covari
     }
     #########################
     # compute the IV moments
-    ######################### 
+    #########################
     IV_moments = NULL
     # endogenous quasi-differences
-    for (ii in seq_len(length(endogenous_names))) { 
+    for (ii in seq_len(length(endogenous_names))) {
         this_partial_eta = -panel_data[, get(paste0(endogenous_names[ii], "_quasidiff"))]
         moments_ii = c()
         for (zz in seq_len(ncol(instrument_matrix))) {
@@ -328,7 +314,7 @@ PR.est.AR1.GMM.SE <- function(panel_data, outcome_name, endogenous_names, covari
     moments_ii = colMeans(-(1 - AR1_persistence_guess) * instrument_matrix)
     IV_moments = cbind(IV_moments, moments_ii)
     # exogenous quasi-differences
-    for (ii in seq_len(length(covariate_names))) { 
+    for (ii in seq_len(length(covariate_names))) {
         this_partial_eta = -panel_data[, get(paste0(covariate_names[ii], "_quasidiff"))]
         moments_ii = c()
         for (zz in seq_len(ncol(instrument_matrix))) {
@@ -348,3 +334,131 @@ PR.est.AR1.GMM.SE <- function(panel_data, outcome_name, endogenous_names, covari
     se_coefs = data.table(Variable = the_names, SE = se_coefs, N = nrow(instrument_matrix))
     return(se_coefs)
 }
+
+
+#' Internal function to estimate AR(1) model. It uses GMM to fit the IV moments. For a guess of beta and the AR1_persistence, it computes the unobserved shock using quasi-differences. u_{i,t} = (y_{i,t} - rho*y_{i,t-1}) - (X_{i,t} - rho*X_{i,t-1})'beta. Then it fits mean(u_{i,t} * X_{i,t-1}) = 0 using BFGS.
+#' @noRd
+PR.est.AR1.GMM.unknown_persistence.init_search <- function(panel_data, outcome_name, endogenous_names, covariate_names = NULL, fixedeffect_names = NULL, AR1_IV_lags = 1, AR1_IV_outcome = TRUE, AR1_persistence = NULL, num_restarts = 10) {
+    # number of endogenous variables
+    n_endogenous = length(endogenous_names)
+    n_exogenous = length(covariate_names)
+    instrument_names = c(paste0(endogenous_names, "_lag"))
+    if (AR1_IV_outcome) { # outcome, lag 1
+        instrument_names = c(instrument_names, paste0(outcome_name, "_lag"))
+    }
+    if (AR1_IV_lags > 1) {
+        instrument_names = c(instrument_names, paste0(endogenous_names, "_lag2"))
+    }
+    if (AR1_IV_outcome && AR1_IV_lags > 1) { # outcome, lag 2
+        instrument_names = c(instrument_names, paste0(outcome_name, "_lag2"))
+    }
+    if (length(covariate_names) > 0) { # exogenous variables
+        instrument_names = c(instrument_names, covariate_names)
+        instrument_names = c(instrument_names, paste0(covariate_names, "_lag"))
+        if (AR1_IV_lags > 1) { # exogenous variables, lag 2
+            instrument_names = c(instrument_names, paste0(covariate_names, "_lag2"))
+        }
+    }
+    # verify that number of instruments is sufficient
+    if (length(instrument_names) <= (n_endogenous + n_exogenous)) {
+        stop("Number of instruments must be greater than the number of endogenous variables and covariates")
+    }
+    # calculate the moment conditions
+    order_of_covariances = c(outcome_name, paste0(outcome_name, "_lag"), endogenous_names, paste0(endogenous_names, "_lag"))
+    if (length(covariate_names) > 0) {
+        order_of_covariances = c(order_of_covariances, covariate_names)
+    }
+    # we only need the number of instruments = number of parameters
+    #instrument_names = instrument_names[1:(n_endogenous + 1 + n_exogenous)]
+    # calculate the covariance moments
+    covariance_moments = NULL
+    for (zz in instrument_names){
+        row_of_covariance_moments = c()
+        for (var in order_of_covariances){
+            row_of_covariance_moments = c(row_of_covariance_moments, panel_data[, cov(get(zz), get(var))])
+        }
+        covariance_moments = rbind(covariance_moments, row_of_covariance_moments)
+    }
+    rownames(covariance_moments) = instrument_names
+    colnames(covariance_moments) = order_of_covariances
+    # calculate the fit of the moments
+    evaluate_fit <- function(x) {
+        # beta and rho
+        param_index = 1
+        beta_guess = x[1:n_endogenous]
+        param_index = param_index + n_endogenous
+        AR1_persistence_guess = x[(n_endogenous + 1)]
+        pvec = c(1, -AR1_persistence_guess, -beta_guess, beta_guess * AR1_persistence_guess)
+        # delta
+        if (n_exogenous > 0) {
+            param_index = param_index + 1
+            delta_guess = x[param_index:(param_index + n_exogenous - 1)]
+            pvec = c(pvec, -delta_guess, delta_guess * AR1_persistence_guess)
+        }
+        # evaluation the moment fit
+        Amat = t(covariance_moments) %*% (covariance_moments)
+        pvec = matrix(pvec)
+        g_eval = t(pvec) %*% Amat %*% pvec
+        return(as.vector(g_eval))
+    }
+    # calculate the gradient
+    evaluate_gradient <- function(x) {
+      # beta and rho
+      param_index = 1
+      beta_guess = x[1:n_endogenous]
+      param_index = param_index + n_endogenous
+      AR1_persistence_guess = x[(n_endogenous + 1)]
+      pvec = c(1, -AR1_persistence_guess, -beta_guess, beta_guess * AR1_persistence_guess)
+      # delta
+      if (n_exogenous > 0) {
+        param_index = param_index + 1
+        delta_guess = x[param_index:(param_index + n_exogenous - 1)]
+        pvec = c(pvec, -delta_guess, delta_guess * AR1_persistence_guess)
+      }
+      # evaluation the moment fit
+      Amat = t(covariance_moments) %*% (covariance_moments)
+      pvec = matrix(pvec)
+      # construct derivative matrix
+      pvec_deriv = NULL
+      for (ii in 1:length(endogenous_names)){
+        beta_term = rep(0, length(endogenous_names))
+        beta_term[ii] = 1
+        this_pvec = c(0, 0, -beta_term, beta_term * AR1_persistence_guess)
+        pvec_deriv = cbind(pvec_deriv, this_pvec)
+      }
+      beta_term = rep(0, length(endogenous_names))
+      rho_deriv = c(0, -1, rep(0, length(endogenous_names)), beta_guess)
+      pvec_deriv = cbind(pvec_deriv, rho_deriv)
+      g_eval = t(pvec) %*% (2*Amat) %*% pvec_deriv
+      return(as.vector(g_eval))
+    }
+    # minimize the quadratic form
+    results = NULL
+    fits = c()
+    for (ii in 1:num_restarts) {
+        set.seed(ii)
+        startvals = rep(NA, n_endogenous + 1 + n_exogenous)
+        soln = pso::psoptim(par = startvals * NA, fn = evaluate_fit, gr = evaluate_gradient)
+        results = rbind(results, soln$par)
+        fits = c(fits, sum(abs(soln$value)))
+    }
+    results_round = unique(round(cbind(results, fits), 3))
+    results_round = results_round[results_round[, "fits"] == min(results_round[, "fits"]), ]
+    if (!("numeric" %in% class(results_round))) {
+      print("Warning: best solution is not unique.")
+      print(results_round)
+      results_round = results[results[, "fits"] == min(results[, "fits"]), ]
+      results_round = results_round[1,]
+    }
+    if ("numeric" %in% class(results_round)) {
+        best_params = results_round[1:(n_endogenous + 1 + n_exogenous)]
+        beta_guess = best_params[1:n_endogenous]
+        AR1_persistence_guess = best_params[(n_endogenous + 1)]
+        delta_guess = NULL
+        if (n_exogenous > 0) {
+            delta_guess = best_params[(n_endogenous + 2):(length(best_params))]
+        }
+        return(list(beta_params = beta_guess, AR1_persistence = AR1_persistence_guess, delta_params = delta_guess))
+    }
+}
+

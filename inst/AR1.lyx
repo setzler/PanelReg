@@ -385,29 +385,11 @@ Denote
 \end_layout
 
 \begin_layout Enumerate
-Set the weighting matrix to 
-\begin_inset Formula $W=I$
+Solve for an initial guess of 
+\begin_inset Formula $\left(\beta,\delta,\rho\right)$
 \end_inset
 
-.
- Solve 
-\begin_inset Formula $\left(\beta,\delta\right)=\min_{\hat{\beta},\hat{\delta}}\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},0\right)\right]'W\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},0\right)\right]$
-\end_inset
-
-.
- This gives an initial solution given 
-\begin_inset Formula $\rho=0$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Enumerate
-Solve 
-\begin_inset Formula $\left(\beta,\delta,\rho\right)=\min_{\hat{\beta},\hat{\delta},\hat{\rho}}\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\right]'W\mathbb{E}\left[g_{it}\left(\hat{\beta},\hat{\delta},\hat{\rho}\right)\right]$
-\end_inset
-
-, taking the most recent solution as the initialization point.
+ using the fast moment-matching estimator discussed below.
 \end_layout
 
 \begin_layout Enumerate
@@ -468,6 +450,80 @@ Compute
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection*
+Appendix: Fast Moment-matching Estimator
+\end_layout
+
+\begin_layout Standard
+Recall from equation (4):
+\begin_inset Formula 
+\[
+y_{it}=y_{it-1}(\rho)+x_{it}'(\beta)+x_{it-1}'(-\rho\beta)+w_{it}'(\delta)+w_{it-1}'(-\rho\delta)+\eta_{it}
+\]
+
+\end_inset
+
+We can form a moment using the covariance between 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ and any instrument 
+\begin_inset Formula $z_{it}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+0 & =(1)\text{Cov}\left(z_{it},y_{it}\right)+(-\rho)\text{Cov}\left(z_{it},y_{it-1}\right)\\
+ & +\sum_{k=1,...,|x_{it}|}(-\beta^{(k)})\text{Cov}\left(z_{it},x_{it}^{(k)}\right)+\sum_{k=1,...,|x_{it}|}(\rho\beta^{(k)})\text{Cov}\left(z_{it},x_{it-1}^{(k)}\right)\\
+ & +\sum_{m=2,...,|w_{it}|}(-\delta^{(m)})\text{Cov}\left(z_{it},w_{it}^{(m)}\right)+\sum_{m=2,...,|w_{it}|}(\rho\delta^{(m)})\text{Cov}\left(z_{it},w_{it-1}^{(k)}\right)
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\delta_{1}$
+\end_inset
+
+ does not appear because it corresponds to the intercept.
+ This is one equation in 
+\begin_inset Formula $|x_{it}|+|w_{it}|$
+\end_inset
+
+ unknowns.
+ 
+\end_layout
+
+\begin_layout Standard
+With 
+\begin_inset Formula $J\geq|x_{it}|+|w_{it}|$
+\end_inset
+
+ instruments, we can solve this set of equations for 
+\begin_inset Formula $\rho,\beta,\delta$
+\end_inset
+
+ (except for the intercept 
+\begin_inset Formula $\delta_{1}$
+\end_inset
+
+).
+ The covariances only have to be computed once; they do not have to be updated
+ for each parameter guess, which means we can solve for the parameters very
+ quickly.
+ We can then solve for 
+\begin_inset Formula $\delta_{1}$
+\end_inset
+
+ such that the unconditional expectation of 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ equals the model prediction from the right-hand side.
+ Thus, we can provide a moment-matching estimate of all parameters very
+ quickly.
 \end_layout
 
 \end_body

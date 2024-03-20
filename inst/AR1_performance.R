@@ -1,9 +1,6 @@
 rm(list = ls())
 setwd("~/github/PanelReg/")
-library(devtools)
-library(testthat)
 library(parallel)
-document()
 
 varnames = list(
   id_name = "unit_id",
@@ -14,6 +11,7 @@ varnames = list(
 )
 
 eval_AR1 <- function(ii) {
+    print(ii)
     # read values
     nn = results_holder$N[ii]
     seedval = results_holder$seedval[ii]
@@ -53,7 +51,10 @@ eval_AR1 <- function(ii) {
 results_holder = data.table(expand.grid(seedval = 1:10, N = c(1e3, 2e3, 5e3, 1e4, 2e4), Method = c("PanelIV", "PanelIVy", "GMM_lag1y", "GMM_lag2", "GMM_lag2y")))
 
 # run the simulation
+aa = proc.time()[3]
+#res = lapply(150:180, eval_AR1)
 res = mclapply(seq_len(nrow(results_holder)), eval_AR1, mc.cores = 7)
+bb = proc.time()[3]
 res = rbindlist(res)
 write.csv(res, "inst/AR1_simulation_results.csv", row.names = FALSE)
 
