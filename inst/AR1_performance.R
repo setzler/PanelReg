@@ -1,6 +1,8 @@
 rm(list = ls())
 setwd("~/github/PanelReg/")
+library(PanelReg)
 library(parallel)
+library(data.table)
 
 varnames = list(
   id_name = "unit_id",
@@ -54,7 +56,8 @@ results_holder = data.table(expand.grid(seedval = 1:10, N = c(1e3, 2e3, 5e3, 1e4
 aa = proc.time()[3]
 #res = lapply(150:180, eval_AR1)
 res = mclapply(seq_len(nrow(results_holder)), eval_AR1, mc.cores = 7)
-bb = proc.time()[3]
+bb = proc.time()[3] 
+print(sprintf("elapsed time: %s minutes", round((bb - aa)/60, 2)))
 res = rbindlist(res)
 write.csv(res, "inst/AR1_simulation_results.csv", row.names = FALSE)
 
