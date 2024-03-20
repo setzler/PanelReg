@@ -402,12 +402,13 @@ outcomes as IVs:</p>
 <span></span>
 <span><span class="va">reg</span> <span class="op">=</span> <span class="fu"><a href="../reference/PanelReg.html">PanelReg</a></span><span class="op">(</span>panel_data <span class="op">=</span> <span class="va">simulated_data</span>, panel_model <span class="op">=</span> <span class="st">"AR1"</span>, </span>
 <span>               varnames <span class="op">=</span> <span class="va">varnames</span>, AR1_options <span class="op">=</span> <span class="va">AR1_options</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Best initial guess of beta parameters: 0.499, -0.202. Best initial guess of AR1 persistence: 0.5."</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">reg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Key: &lt;Variable&gt;</span></span>
 <span><span class="co">#&gt;           Variable  Estimate       SE    tvalue pvalue</span></span>
 <span><span class="co">#&gt;             &lt;char&gt;     &lt;num&gt;    &lt;num&gt;     &lt;num&gt;  &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1: AR1_persistence  0.499734 0.001989  251.2433      0</span></span>
-<span><span class="co">#&gt; 2:      endog_var1  0.498629 0.000776  642.7569      0</span></span>
+<span><span class="co">#&gt; 2:      endog_var1  0.498629 0.000776  642.7568      0</span></span>
 <span><span class="co">#&gt; 3:      endog_var2 -0.201722 0.001607 -125.5449      0</span></span></code></pre></div>
 <p>Note that an estimate of the AR(1) persistence parameter, <span class="math inline">\(\rho\)</span>, is returned by both “AR1”
 implementations.</p>
